@@ -2,6 +2,8 @@ package com.project.habitat.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -30,4 +32,7 @@ public class AppUser {
 
     @Column(name = "password")
     String password;
+
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    List<Todo> todos = new ArrayList<>();
 }
