@@ -7,3 +7,15 @@ CREATE TABLE app_users
     email     VARCHAR(100),
     password VARCHAR(100)
 );
+
+CREATE TABLE todos
+(
+   id INT AUTO_INCREMENT PRIMARY KEY,
+   description TEXT,
+   is_completed BOOLEAN,
+   deadline DATETIME,
+   user_id INT NOT NULL,
+   CONSTRAINT fk_todos_user
+       FOREIGN KEY (user_id)
+           REFERENCES app_users(uid)
+);
