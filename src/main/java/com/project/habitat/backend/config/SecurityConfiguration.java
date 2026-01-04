@@ -29,7 +29,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((config)-> {
-            config.requestMatchers("/h2-console/**","/css/**", "/templates/**", "/isAuthenticated", "/register", "/previewMeetingMinute").permitAll();
+            config.requestMatchers("/h2-console/**","/css/**", "/templates/**", "/isAuthenticated", "/register", "/previewMeetingMinute", "/login").permitAll();
             config.requestMatchers("/api/**").authenticated();
         });
 

@@ -13,8 +13,11 @@ CREATE TABLE todos
    id INT AUTO_INCREMENT PRIMARY KEY,
    description TEXT,
    is_completed BOOLEAN,
-   deadline DATETIME,
+   deadline_date DATE,
+   todo_uuid VARCHAR(36) NOT NULL UNIQUE,
+   estimated_completion_time_minutes INT,
    user_id INT NOT NULL,
+   task_rating INT NULL,
    CONSTRAINT fk_todos_user
        FOREIGN KEY (user_id)
            REFERENCES app_users(uid)
