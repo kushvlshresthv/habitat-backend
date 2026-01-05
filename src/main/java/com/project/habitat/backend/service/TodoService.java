@@ -13,6 +13,7 @@ import com.project.habitat.backend.utils.EntityValidator;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -75,7 +76,8 @@ public class TodoService {
         }
         Todo retrievedTodo = retrievedTodoOptional.get();
 
-        Integer newTotalElapsedSeconds = LocalTime.now().getSecond();
+        Integer newTotalElapsedSeconds = Duration.between(LocalTime.now(), retrievedTodo.getLastResumedAt()).toSecondsPart()
+                + retrievedTodo.getTotalElapsedSeconds();
         retrievedTodo.setTotalElapsedSeconds(newTotalElapsedSeconds);
         retrievedTodo.setLastResumedAt(null);
         retrievedTodo.setStatus(Status.PAUSED);

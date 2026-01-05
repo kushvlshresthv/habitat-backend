@@ -43,6 +43,6 @@ public class TodoController {
     @PutMapping("pause-todo")
     public ResponseEntity<ApiResponse> pauseTodo(@RequestParam Integer id, Authentication authentication) {
         todoService.startTodo( id, authentication.getName());
-        return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_STARTED));
+        return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_PAUSED));
     }
 }
