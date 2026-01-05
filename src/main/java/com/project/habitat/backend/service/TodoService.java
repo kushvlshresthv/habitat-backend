@@ -4,6 +4,7 @@ import com.project.habitat.backend.dto.TodoCreationDto;
 import com.project.habitat.backend.dto.TodoSummaryDto;
 import com.project.habitat.backend.entity.AppUser;
 import com.project.habitat.backend.entity.Todo;
+import com.project.habitat.backend.enums.Status;
 import com.project.habitat.backend.exception.ExceptionMessage;
 import com.project.habitat.backend.exception.UserDoesNotExistException;
 import com.project.habitat.backend.repository.AppUserRepository;
@@ -11,6 +12,8 @@ import com.project.habitat.backend.repository.TodoRepository;
 import com.project.habitat.backend.utils.EntityValidator;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,9 +38,11 @@ public class TodoService {
         Todo todo = Todo.builder().
                 user(user.get()).
                 description(todoCreationDto.getDescription()).
-                isCompleted(false).
+                status(Status.NOT_STARTED).
                 deadlineDate(todoCreationDto.getDeadlineDate()).
-                estimatedCompletionTimeMinutes(todoCreationDto.getEstimatedCompletionTimeMinutes())
+                estimatedCompletionTimeMinutes(todoCreationDto.getEstimatedCompletionTimeMinutes()).
+                totalElapsedSeconds(0).
+                lastResumedAt(null)
                 .build();
         todoRepository.save(todo);
     }
@@ -48,5 +53,32 @@ public class TodoService {
                 .map(TodoSummaryDto::new)
                 .toList();
         return incompleteTodoSummaries;
+    }
+
+    public void startTodo(Integer todoId, String username) {
+        Optional<Todo> retrievedTodoOptional = todoRepository.getUserTodoById( todoId, username);
+        if(retrievedTodoOptional.isEmpty()) {
+            //throw exception
+            return;
+        }
+        Todo retrievedTodo = retrievedTodoOptional.get();
+        retrievedTodo.setLastResumedAt(LocalTime.now());
+        retrievedTodo.setStatus(Status.IN_PROGRESS);
+        todoRepository.save(retrievedTodo);
+    }
+
+    public void pauseTodo(Integer todoId, String username) {
+        Optional<Todo> retrievedTodoOptional = todoRepository.getUserTodoById( todoId, username);
+        if(retrievedTodoOptional.isEmpty()) {
+            //throw exception
+            return;
+        }
+        Todo retrievedTodo = retrievedTodoOptional.get();
+
+        Integer newTotalElapsedSeconds = LocalTime.now().getSecond();
+        retrievedTodo.setTotalElapsedSeconds(newTotalElapsedSeconds);
+        retrievedTodo.setLastResumedAt(null);
+        retrievedTodo.setStatus(Status.PAUSED);
+        todoRepository.save(retrievedTodo);
     }
 }

@@ -4,6 +4,7 @@ import com.project.habitat.backend.dto.TodoCreationDto;
 import com.project.habitat.backend.dto.TodoSummaryDto;
 import com.project.habitat.backend.entity.Todo;
 import com.project.habitat.backend.response.ApiResponse;
+import com.project.habitat.backend.response.ResponseMessage;
 import com.project.habitat.backend.service.TodoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -31,5 +32,17 @@ public class TodoController {
     public ResponseEntity<ApiResponse> createNewTodo(Authentication authentication) {
         List<TodoSummaryDto> incompleteTodoSummaries = this.todoService.getIncompletedTodo(authentication.getName());
         return ResponseEntity.ok(new ApiResponse(incompleteTodoSummaries));
+    }
+
+    @PutMapping("start-todo")
+    public ResponseEntity<ApiResponse> startTodo(@RequestParam Integer id, Authentication authentication) {
+        todoService.startTodo( id, authentication.getName());
+        return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_STARTED));
+    }
+
+    @PutMapping("pause-todo")
+    public ResponseEntity<ApiResponse> pauseTodo(@RequestParam Integer id, Authentication authentication) {
+        todoService.startTodo( id, authentication.getName());
+        return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_STARTED));
     }
 }

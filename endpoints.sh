@@ -18,6 +18,13 @@ incomplete_todos() {
   echo
 }
 
+
+start_todo() {
+  echo "Starting todo..."
+  curl -X PUT "$BASE_URL/api/start-todo?id=1" -u $USER:$PASS | jq
+  echo
+}
+
 ## Another endpoint example
 #get_all_todos() {
 #  echo "Fetching all todos..."

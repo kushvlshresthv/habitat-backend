@@ -1,5 +1,6 @@
 package com.project.habitat.backend.entity;
 
+import com.project.habitat.backend.enums.Status;
 import com.project.habitat.backend.enums.TaskRating;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,8 +29,9 @@ public class Todo {
     @Column(name="description")
     String description;
 
-    @Column(name="is_completed")
-    Boolean isCompleted;
+    @Column(name="status")
+    @Enumerated(EnumType.STRING)
+    Status status ;
 
     @Column(name="deadline_date")
     LocalDate deadlineDate;
@@ -40,6 +42,12 @@ public class Todo {
     @Column(name="task_rating", nullable=true)
     @Enumerated(EnumType.ORDINAL)
     TaskRating taskRating;
+
+    @Column(name="total_elapsed_seconds")
+    Integer totalElapsedSeconds;
+
+    @Column(name="last_resumed_at", nullable = true)
+    LocalTime lastResumedAt;
 
     @ManyToOne
     @JoinColumn(name="user_id", referencedColumnName = "uid", nullable=false)
