@@ -1,7 +1,7 @@
 package com.project.habitat.backend.service;
 
+import com.project.habitat.backend.dto.TaskSummaryDto;
 import com.project.habitat.backend.dto.TodoCreationDto;
-import com.project.habitat.backend.dto.TodoSummaryDto;
 import com.project.habitat.backend.entity.AppUser;
 import com.project.habitat.backend.entity.Todo;
 import com.project.habitat.backend.enums.Status;
@@ -12,7 +12,6 @@ import com.project.habitat.backend.repository.TodoRepository;
 import com.project.habitat.backend.utils.EntityValidator;
 import org.springframework.stereotype.Service;
 
-import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
@@ -33,7 +32,7 @@ public class TodoService {
     public void createNewTodo(TodoCreationDto todoCreationDto, String username) {
         entityValidator.validate(todoCreationDto);
         Optional<AppUser> user = appUserRepository.findByUsername(username);
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             throw new UserDoesNotExistException(ExceptionMessage.USER_DOES_NOT_EXIST);
         }
         Todo todo = Todo.builder().
@@ -46,41 +45,57 @@ public class TodoService {
                 lastResumedAt(null)
                 .build();
         todoRepository.save(todo);
+
     }
 
-    public List<TodoSummaryDto> getIncompletedTodo(String username) {
-        List<Todo> incompleteTodos =  todoRepository.getIncompleteTodos(username);
-        List<TodoSummaryDto> incompleteTodoSummaries = incompleteTodos.stream()
-                .map(TodoSummaryDto::new)
+    public List<TaskSummaryDto> getIncompletedTasks(String username) {
+        List<Todo> incompleteTodos = todoRepository.getIncompleteTodos(username);
+        List<TaskSummaryDto> incompleteTasks = incompleteTodos.stream()
+                .map(TaskSummaryDto::new)
                 .toList();
-        return incompleteTodoSummaries;
+        return incompleteTasks;
     }
 
-    public void startTodo(Integer todoId, String username) {
-        Optional<Todo> retrievedTodoOptional = todoRepository.getUserTodoById( todoId, username);
-        if(retrievedTodoOptional.isEmpty()) {
-            //throw exception
-            return;
+    public TaskSummaryDto startTodo(Integer todoId, String username) {
+        Optional<Todo> retrievedTodoOptional = todoRepository.getUserTodoById(todoId, username);
+        if (retrievedTodoOptional.isEmpty()) {
+            //TODO: throw exception
+            return null;
         }
+
         Todo retrievedTodo = retrievedTodoOptional.get();
+        if (retrievedTodo.getStatus() == Status.IN_PROGRESS) {
+            //TODO: return that task is already in pprogress
+        } else if (retrievedTodo.getStatus() == Status.CANCELLED) {
+            //TODO: return that task is cancelled and cannot be started
+        } else if (retrievedTodo.getStatus() == Status.COMPLETED) {
+            //TODO: return that task is comppleted and cannot be started
+        }
+
         retrievedTodo.setLastResumedAt(LocalTime.now());
         retrievedTodo.setStatus(Status.IN_PROGRESS);
-        todoRepository.save(retrievedTodo);
+        Todo savedTodo = todoRepository.save(retrievedTodo);
+        return new TaskSummaryDto(savedTodo);
     }
 
-    public void pauseTodo(Integer todoId, String username) {
-        Optional<Todo> retrievedTodoOptional = todoRepository.getUserTodoById( todoId, username);
-        if(retrievedTodoOptional.isEmpty()) {
-            //throw exception
-            return;
+    public TaskSummaryDto pauseTodo(Integer todoId, String username) {
+        Optional<Todo> retrievedTodoOptional = todoRepository.getUserTodoById(todoId, username);
+        if (retrievedTodoOptional.isEmpty()) {
+            //TODO: throw exception
+            return null;
         }
         Todo retrievedTodo = retrievedTodoOptional.get();
+
+        if (retrievedTodo.getStatus() != Status.IN_PROGRESS) {
+            //TODO: return that task cannot be paused
+        }
 
         Integer newTotalElapsedSeconds = Duration.between(LocalTime.now(), retrievedTodo.getLastResumedAt()).toSecondsPart()
                 + retrievedTodo.getTotalElapsedSeconds();
         retrievedTodo.setTotalElapsedSeconds(newTotalElapsedSeconds);
         retrievedTodo.setLastResumedAt(null);
         retrievedTodo.setStatus(Status.PAUSED);
-        todoRepository.save(retrievedTodo);
+        Todo savedTodo = todoRepository.save(retrievedTodo);
+        return new TaskSummaryDto(savedTodo);
     }
 }

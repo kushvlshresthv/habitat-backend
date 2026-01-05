@@ -25,6 +25,12 @@ start_todo() {
   echo
 }
 
+pause_todo() {
+  echo "Pausing todo..."
+  curl -X PUT "$BASE_URL/api/pause-todo?id=1" -u $USER:$PASS | jq
+  echo
+}
+
 ## Another endpoint example
 #get_all_todos() {
 #  echo "Fetching all todos..."
