@@ -5,6 +5,7 @@ import com.project.habitat.backend.enums.TaskRating;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -47,7 +48,7 @@ public class Todo {
     Integer totalElapsedSeconds;
 
     @Column(name="last_resumed_at", nullable = true)
-    LocalTime lastResumedAt;
+    Instant lastResumedAt;
 
     @ManyToOne
     @JoinColumn(name="user_id", referencedColumnName = "uid", nullable=false)

@@ -13,7 +13,7 @@ import com.project.habitat.backend.utils.EntityValidator;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.time.LocalTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,7 +72,7 @@ public class TodoService {
             //TODO: return that task is comppleted and cannot be started
         }
 
-        retrievedTodo.setLastResumedAt(LocalTime.now());
+        retrievedTodo.setLastResumedAt(Instant.now());
         retrievedTodo.setStatus(Status.IN_PROGRESS);
         Todo savedTodo = todoRepository.save(retrievedTodo);
         return new TaskSummaryDto(savedTodo);
@@ -90,7 +90,7 @@ public class TodoService {
             //TODO: return that task cannot be paused
         }
 
-        Integer newTotalElapsedSeconds = Duration.between(LocalTime.now(), retrievedTodo.getLastResumedAt()).toSecondsPart()
+        Integer newTotalElapsedSeconds = Duration.between(Instant.now(), retrievedTodo.getLastResumedAt()).toSecondsPart()
                 + retrievedTodo.getTotalElapsedSeconds();
         retrievedTodo.setTotalElapsedSeconds(newTotalElapsedSeconds);
         retrievedTodo.setLastResumedAt(null);

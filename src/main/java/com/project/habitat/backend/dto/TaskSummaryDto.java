@@ -4,6 +4,7 @@ import com.project.habitat.backend.entity.Todo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -16,7 +17,7 @@ public class TaskSummaryDto {
     LocalDate deadlineDate;
     Integer estimatedCompletionTimeMinutes;
     Integer totalElapsedSeconds;
-    LocalTime lastResumedAt;
+    Instant lastResumedAt;
 
     public TaskSummaryDto(Todo todo) {
         this.id = todo.getId();
