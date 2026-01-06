@@ -14,9 +14,19 @@ public interface TodoRepository extends JpaRepository<Todo, Integer> {
                 FROM Todo t
                 JOIN t.user u
                 WHERE u.username = :username
-                  AND t.status = 'NOT_STARTED'
+                  AND (t.status = 'NOT_STARTED' OR t.status='IN_PROGRESS' OR t.status='PAUSED')
             """)
     public List<Todo> getIncompleteTodos(String username);
+
+    @Query("""
+                            SELECT t
+                            FROM Todo t
+                            JOIN t.user u
+                            WHERE u.username = :username
+                              AND t.status = 'IN_PROGRESS'
+            """)
+
+    public List<Todo> getOngoingTodo(String username);
 
     @Query("""
                 SELECT t

@@ -57,10 +57,16 @@ public class TodoService {
     }
 
     public TaskSummaryDto startTodo(Integer todoId, String username) {
+        List<Todo> ongoingTodos = todoRepository.getOngoingTodo(username);
+        if (!ongoingTodos.isEmpty()) {
+            throw new RuntimeException();
+            //TODO: handle this exception properly
+        }
+
         Optional<Todo> retrievedTodoOptional = todoRepository.getUserTodoById(todoId, username);
         if (retrievedTodoOptional.isEmpty()) {
-            //TODO: throw exception
-            return null;
+            throw new RuntimeException();
+            //TODO: handle this exception properly
         }
 
         Todo retrievedTodo = retrievedTodoOptional.get();
