@@ -1,6 +1,6 @@
 package com.project.habitat.backend.service;
 
-import com.project.habitat.backend.dto.TaskSummaryDto;
+import com.project.habitat.backend.dto.TodoDto;
 import com.project.habitat.backend.dto.TodoCreationDto;
 import com.project.habitat.backend.entity.AppUser;
 import com.project.habitat.backend.entity.Todo;
@@ -48,15 +48,15 @@ public class TodoService {
 
     }
 
-    public List<TaskSummaryDto> getIncompletedTasks(String username) {
+    public List<TodoDto> getIncompletedTodos(String username) {
         List<Todo> incompleteTodos = todoRepository.getIncompleteTodos(username);
-        List<TaskSummaryDto> incompleteTasks = incompleteTodos.stream()
-                .map(TaskSummaryDto::new)
+        List<TodoDto> incompleteTodosDto = incompleteTodos.stream()
+                .map(TodoDto::new)
                 .toList();
-        return incompleteTasks;
+        return incompleteTodosDto;
     }
 
-    public TaskSummaryDto startTask(Integer todoId, String username) {
+    public TodoDto startTodo(Integer todoId, String username) {
         List<Todo> ongoingTodos = todoRepository.getOngoingTodo(username);
         if (!ongoingTodos.isEmpty()) {
             throw new RuntimeException();
@@ -71,20 +71,20 @@ public class TodoService {
 
         Todo retrievedTodo = retrievedTodoOptional.get();
         if (retrievedTodo.getStatus() == TodoStatus.IN_PROGRESS) {
-            //TODO: return that task is already in pprogress
+            //TODO: return that todo is already in pprogress
         } else if (retrievedTodo.getStatus() == TodoStatus.CANCELLED) {
-            //TODO: return that task is cancelled and cannot be started
+            //TODO: return that todo is cancelled and cannot be started
         } else if (retrievedTodo.getStatus() == TodoStatus.COMPLETED) {
-            //TODO: return that task is comppleted and cannot be started
+            //TODO: return that todo is comppleted and cannot be started
         }
 
         retrievedTodo.setLastResumedAt(Instant.now());
         retrievedTodo.setStatus(TodoStatus.IN_PROGRESS);
         Todo savedTodo = todoRepository.save(retrievedTodo);
-        return new TaskSummaryDto(savedTodo);
+        return new TodoDto(savedTodo);
     }
 
-    public TaskSummaryDto pauseTask(Integer todoId, String username) {
+    public TodoDto pauseTodo(Integer todoId, String username) {
         Optional<Todo> retrievedTodoOptional = todoRepository.getUserTodoById(todoId, username);
         if (retrievedTodoOptional.isEmpty()) {
             //TODO: throw exception
@@ -93,7 +93,7 @@ public class TodoService {
         Todo retrievedTodo = retrievedTodoOptional.get();
 
         if (retrievedTodo.getStatus() != TodoStatus.IN_PROGRESS) {
-            //TODO: return that task cannot be paused
+            //TODO: return that todo cannot be paused
             throw new RuntimeException();
         }
 
@@ -103,11 +103,11 @@ public class TodoService {
         retrievedTodo.setLastResumedAt(null);
         retrievedTodo.setStatus(TodoStatus.PAUSED);
         Todo savedTodo = todoRepository.save(retrievedTodo);
-        return new TaskSummaryDto(savedTodo);
+        return new TodoDto(savedTodo);
     }
 
-    public TaskSummaryDto taskCompleted(Integer taskId, String username) {
-        Optional<Todo> retrievedTaskOptional = todoRepository.getUserTodoById(taskId, username);
+    public TodoDto todoCompleted(Integer todoId, String username) {
+        Optional<Todo> retrievedTodoOptional = todoRepository.getUserTodoById(todoId, username);
         return null;
     }
 }

@@ -1,6 +1,6 @@
 package com.project.habitat.backend.controller;
 
-import com.project.habitat.backend.dto.TaskSummaryDto;
+import com.project.habitat.backend.dto.TodoDto;
 import com.project.habitat.backend.dto.TodoCreationDto;
 import com.project.habitat.backend.response.ApiResponse;
 import com.project.habitat.backend.response.ResponseMessage;
@@ -27,27 +27,27 @@ public class TodoController {
         return ResponseEntity.ok(new ApiResponse());
     }
 
-    @GetMapping("incomplete-tasks")
-    public ResponseEntity<ApiResponse> createNewTodo(Authentication authentication) {
-        List<TaskSummaryDto> incompleteTasks = this.todoService.getIncompletedTasks(authentication.getName());
+    @GetMapping("incomplete-todos")
+    public ResponseEntity<ApiResponse> incompleteTodos(Authentication authentication) {
+        List<TodoDto> incompleteTasks = this.todoService.getIncompletedTodos(authentication.getName());
         return ResponseEntity.ok(new ApiResponse(incompleteTasks));
     }
 
-    @PutMapping("start-task")
-    public ResponseEntity<ApiResponse> startTask(@RequestParam Integer id, @RequestParam String type, Authentication authentication) {
-        TaskSummaryDto ongoingTask = todoService.startTask( id, authentication.getName());
+    @PutMapping("start-todo")
+    public ResponseEntity<ApiResponse> startTodo(@RequestParam Integer id, @RequestParam String type, Authentication authentication) {
+        TodoDto ongoingTask = todoService.startTodo( id, authentication.getName());
         return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_STARTED, ongoingTask));
     }
 
     @PutMapping("pause-task")
-    public ResponseEntity<ApiResponse> pauseTask(@RequestParam Integer id, Authentication authentication) {
-        TaskSummaryDto ongoingTask = todoService.pauseTask( id, authentication.getName());
+    public ResponseEntity<ApiResponse> pauseTodo(@RequestParam Integer id, Authentication authentication) {
+        TodoDto ongoingTask = todoService.pauseTodo( id, authentication.getName());
         return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_PAUSED, ongoingTask));
     }
 
-    @PutMapping("task-completed")
+    @PutMapping("todo-completed")
     public ResponseEntity<ApiResponse> taskCompleted(@RequestParam Integer id, Authentication authentication) {
-        TaskSummaryDto completedTask = todoService.taskCompleted( id, authentication.getName());
+        TodoDto completedTask = todoService.todoCompleted( id, authentication.getName());
         return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_COMPLETED, completedTask));
     }
 }

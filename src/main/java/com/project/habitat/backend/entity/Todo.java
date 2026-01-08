@@ -2,6 +2,7 @@ package com.project.habitat.backend.entity;
 
 import com.project.habitat.backend.enums.TodoStatus;
 import com.project.habitat.backend.enums.TaskRating;
+import com.project.habitat.backend.enums.TodoType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,7 +24,7 @@ public class Todo {
     Integer id;
 
     //using uuid for comparison instead of id because id is not assigned until the entity is stored in the database
-    @Column(name = "todo_uuid", nullable = false, unique = true, updatable = false)
+    @Column(name = "uuid", nullable = false, unique = true, updatable = false)
     private String uuid;
 
     @Column(name="description")
@@ -52,6 +53,14 @@ public class Todo {
     @ManyToOne
     @JoinColumn(name="user_id", referencedColumnName = "uid", nullable=false)
     AppUser user;
+
+    @ManyToOne
+    @JoinColumn(name="habit_id", referencedColumnName="id", nullable = true)
+    Habit habit;
+
+    @Column(name="type", nullable=false)
+    @Enumerated(EnumType.STRING)
+    TodoType todoType;
 
     @PrePersist
     public void prePersist() {

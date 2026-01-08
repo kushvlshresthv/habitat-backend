@@ -21,19 +21,29 @@ public class Habit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
+
     @Column(name = "name")
     String name;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     HabitStatus status;
+
     @Column(name = "start_date")
     LocalDate startDate;
+
     @Column(name = "end_date")
     LocalDate endDate;
+
     @Column(name = "cheat_days")
     Integer cheatDays;
+
     @Column(name = "uuid", nullable = false, unique = true, updatable = false)
     private String uuid;
+
+    @Column(name="streak", nullable = false)
+    private Integer streak;
+
     @OneToMany(
             mappedBy = "habit",
             cascade = CascadeType.ALL,
