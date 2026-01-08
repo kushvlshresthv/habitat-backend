@@ -1,13 +1,12 @@
 package com.project.habitat.backend.entity;
 
-import com.project.habitat.backend.enums.Status;
+import com.project.habitat.backend.enums.TodoStatus;
 import com.project.habitat.backend.enums.TaskRating;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -32,7 +31,7 @@ public class Todo {
 
     @Column(name="status")
     @Enumerated(EnumType.STRING)
-    Status status ;
+    TodoStatus status ;
 
     @Column(name="deadline_date")
     LocalDate deadlineDate;

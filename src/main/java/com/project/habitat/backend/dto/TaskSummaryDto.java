@@ -18,6 +18,7 @@ public class TaskSummaryDto {
     Integer estimatedCompletionTimeMinutes;
     Integer totalElapsedSeconds;
     Instant lastResumedAt;
+    String type;
 
     public TaskSummaryDto(Todo todo) {
         this.id = todo.getId();
@@ -27,5 +28,6 @@ public class TaskSummaryDto {
         this.estimatedCompletionTimeMinutes = todo.getEstimatedCompletionTimeMinutes();
         this.totalElapsedSeconds = todo.getTotalElapsedSeconds();
         this.lastResumedAt = todo.getLastResumedAt();
+        this.type = "TODO";
     }
 }

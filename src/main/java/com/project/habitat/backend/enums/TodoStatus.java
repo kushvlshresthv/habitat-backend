@@ -3,7 +3,7 @@ package com.project.habitat.backend.enums;
 import lombok.Getter;
 
 @Getter
-public enum Status {
+public enum TodoStatus {
     NOT_STARTED("NOT_STARTED"),
     IN_PROGRESS("IN_PROGRESS"),
     PAUSED("PAUSED"),
@@ -12,7 +12,7 @@ public enum Status {
     ;
 
     final private String status;
-    Status(String status) {
+    TodoStatus(String status) {
         this.status = status;
     }
 }

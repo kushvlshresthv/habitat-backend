@@ -33,15 +33,21 @@ public class TodoController {
         return ResponseEntity.ok(new ApiResponse(incompleteTasks));
     }
 
-    @PutMapping("start-todo")
-    public ResponseEntity<ApiResponse> startTodo(@RequestParam Integer id, Authentication authentication) {
-        TaskSummaryDto ongoingTask = todoService.startTodo( id, authentication.getName());
+    @PutMapping("start-task")
+    public ResponseEntity<ApiResponse> startTask(@RequestParam Integer id, @RequestParam String type, Authentication authentication) {
+        TaskSummaryDto ongoingTask = todoService.startTask( id, authentication.getName());
         return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_STARTED, ongoingTask));
     }
 
-    @PutMapping("pause-todo")
-    public ResponseEntity<ApiResponse> pauseTodo(@RequestParam Integer id, Authentication authentication) {
-        TaskSummaryDto ongoingTask = todoService.startTodo( id, authentication.getName());
+    @PutMapping("pause-task")
+    public ResponseEntity<ApiResponse> pauseTask(@RequestParam Integer id, Authentication authentication) {
+        TaskSummaryDto ongoingTask = todoService.pauseTask( id, authentication.getName());
         return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_PAUSED, ongoingTask));
+    }
+
+    @PutMapping("task-completed")
+    public ResponseEntity<ApiResponse> taskCompleted(@RequestParam Integer id, Authentication authentication) {
+        TaskSummaryDto completedTask = todoService.taskCompleted( id, authentication.getName());
+        return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_COMPLETED, completedTask));
     }
 }

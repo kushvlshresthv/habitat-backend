@@ -24,3 +24,28 @@ CREATE TABLE todos
         FOREIGN KEY (user_id)
             REFERENCES app_users (uid)
 );
+
+CREATE TABLE habits
+(
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    name       VARCHAR(255),
+    status     VARCHAR(50),
+    start_date DATE,
+    end_date   DATE,
+    cheat_days INT,
+    uuid       VARCHAR(36) NOT NULL UNIQUE,
+    CONSTRAINT uq_habits_uuid UNIQUE (uuid)
+);
+
+CREATE TABLE habit_frequency
+(
+    id               INT AUTO_INCREMENT PRIMARY KEY,
+    habit_id         INT         NOT NULL,
+    day_of_week             VARCHAR(20) NOT NULL,
+    duration_minutes INT,
+    CONSTRAINT uq_habit_day UNIQUE (habit_id, day_of_week),
+    CONSTRAINT fk_habit_frequency_habit
+        FOREIGN KEY (habit_id)
+            REFERENCES habits (id)
+            ON DELETE CASCADE
+);
