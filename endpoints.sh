@@ -18,6 +18,12 @@ incomplete_todos() {
   echo
 }
 
+expired_todos() {
+  echo "Fetching expired todos..."
+  curl -X GET "$BASE_URL/api/expired-todos" -u $USER:$PASS | jq
+  echo
+}
+
 
 start_todo() {
   echo "Starting todo..."

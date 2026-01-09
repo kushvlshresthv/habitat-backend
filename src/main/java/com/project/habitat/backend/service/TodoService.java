@@ -120,6 +120,19 @@ public class TodoService {
         return new TodoDto(savedTodo);
     }
 
+
+    public List<TodoDto> getExpiredTodos(String username, String timezone) {
+        ZoneId userZoneId = ZoneId.of(timezone);
+        LocalDate todayInUserTZ = LocalDate.now(userZoneId);
+        List<Todo> expiredTodos = todoRepository.getExpiredTodos(username, todayInUserTZ);
+        List<TodoDto> expiredTodosDto = expiredTodos.stream()
+                .map(TodoDto::new)
+                .toList();
+        return expiredTodosDto;
+    }
+
+
+    //A_TODO: NOT COMLETED
     public TodoDto todoCompleted(Integer todoId, String username) {
         Optional<Todo> retrievedTodoOptional = todoRepository.getUserTodoById(todoId, username);
         return null;

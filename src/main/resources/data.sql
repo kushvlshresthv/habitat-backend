@@ -13,7 +13,7 @@ INSERT INTO todos (description,
                    type,
                    created_by,
                    created_date)
-VALUES ('Learn Spring Boot basics', 'NOT_STARTED','2026-01-10', UUID(), 45, 1, NULL, 'PURE', '1', CURDATE()),
+VALUES ('Learn Spring Boot basics', 'NOT_STARTED','2026-01-05', UUID(), 45, 1, NULL, 'PURE', '1', CURDATE()),
        ('Understand JPQL joins', 'NOT_STARTED', CURDATE(), UUID(), 30, 1, NULL, 'PURE', '1', CURDATE()),
        ('Implement JWT authentication', 'NOT_STARTED', CURDATE(), UUID(), 60, 1, NULL, 'PURE', '1', CURDATE()),
        ('Revise Data Communication notes', 'NOT_STARTED', CURDATE(), UUID(), 90, 1, NULL, 'PURE', '1', CURDATE()),

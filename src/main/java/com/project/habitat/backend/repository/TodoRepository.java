@@ -33,6 +33,19 @@ public interface TodoRepository extends JpaRepository<Todo, Integer> {
     List<Todo> getIncompleteTodosForDate(@Param("username") String username,
                                          @Param("today") LocalDate today);
 
+
+    @Query("""
+       SELECT t
+       FROM Todo t
+       JOIN t.user u
+       WHERE u.username = :username
+         AND (t.status = 'NOT_STARTED' OR t.status='IN_PROGRESS' OR t.status='PAUSED')
+         AND t.deadlineDate < :today
+       """)
+    List<Todo> getExpiredTodos(@Param("username") String username,
+                                         @Param("today") LocalDate today);
+
+
     @Query("""
                             SELECT t
                             FROM Todo t

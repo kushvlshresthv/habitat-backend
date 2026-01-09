@@ -35,6 +35,12 @@ public class TodoController {
         return ResponseEntity.ok(new ApiResponse(incompleteTodos));
     }
 
+    @GetMapping("expired-todos")
+    public ResponseEntity<ApiResponse> expiredTodos(@AuthenticationPrincipal AppUserDetails appUserDetails) {
+        List<TodoDto> expiredTodos = this.todoService.getExpiredTodos(appUserDetails.getUsername(), appUserDetails.getTimeZone());
+        return ResponseEntity.ok(new ApiResponse(expiredTodos));
+    }
+
     @PutMapping("start-todo")
     public ResponseEntity<ApiResponse> startTodo(@RequestParam Integer id, @RequestParam String type, Authentication authentication) {
         TodoDto ongoingTodo = todoService.startTodo( id, authentication.getName());
