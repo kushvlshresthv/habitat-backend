@@ -3,6 +3,11 @@ package com.project.habitat.backend.entity;
 import com.project.habitat.backend.enums.HabitStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -17,6 +22,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class Habit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,6 +57,21 @@ public class Habit {
     )
     private Set<HabitFrequency> frequencies = new HashSet<>();
 
+    @Column(name = "created_by", updatable = false, nullable = false)
+    @CreatedBy
+    private String createdBy;
+
+    @Column(name = "created_date")
+    @CreatedDate
+    private LocalDate createdDate;
+
+    @Column(name = "modified_by")
+    @LastModifiedBy
+    private String modifiedBy;
+
+    @Column(name = "modified_date")
+    @LastModifiedDate
+    private LocalDate modifiedDate;
 
     @PrePersist
     public void prePersist() {

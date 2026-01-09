@@ -5,6 +5,7 @@ import com.project.habitat.backend.dto.TodoCreationDto;
 import com.project.habitat.backend.entity.AppUser;
 import com.project.habitat.backend.entity.Todo;
 import com.project.habitat.backend.enums.TodoStatus;
+import com.project.habitat.backend.enums.TodoType;
 import com.project.habitat.backend.exception.ExceptionMessage;
 import com.project.habitat.backend.exception.UserDoesNotExistException;
 import com.project.habitat.backend.repository.AppUserRepository;
@@ -42,7 +43,8 @@ public class TodoService {
                 deadlineDate(todoCreationDto.getDeadlineDate()).
                 estimatedCompletionTimeMinutes(todoCreationDto.getEstimatedCompletionTimeMinutes()).
                 totalElapsedSeconds(0).
-                lastResumedAt(null)
+                lastResumedAt(null).
+                todoType(TodoType.PURE)
                 .build();
         todoRepository.save(todo);
 

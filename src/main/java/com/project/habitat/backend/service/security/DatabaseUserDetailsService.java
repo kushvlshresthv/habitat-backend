@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 @Slf4j
 public class DatabaseUserDetailsService implements UserDetailsService {
     AppUserService appUserService;
+
     public DatabaseUserDetailsService(AppUserService appUserService) {
         this.appUserService = appUserService;
     }
@@ -22,14 +23,14 @@ public class DatabaseUserDetailsService implements UserDetailsService {
             AppUser registeredUser = appUserService.loadUserByUsername(username);
             log.info("UserDetailsService invoked by: {}", username);
 
-            if(registeredUser != null) {
-                UserDetails user = User.withUsername(username).password(registeredUser.getPassword()).build();
+            if (registeredUser != null) {
+                UserDetails user = new AppUserDetails(registeredUser.getUid(), registeredUser.getUsername(), registeredUser.getPassword());
                 return user;
             } else {
                 throw new UserDoesNotExistException();
             }
-        } catch(UserDoesNotExistException e) {
-            throw new UsernameNotFoundException("@ " +username + "username not found");
+        } catch (UserDoesNotExistException e) {
+            throw new UsernameNotFoundException("@ " + username + "username not found");
         }
     }
 }

@@ -5,6 +5,11 @@ import com.project.habitat.backend.enums.TodoRating;
 import com.project.habitat.backend.enums.TodoType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -18,6 +23,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,6 +67,22 @@ public class Todo {
     @Column(name="type", nullable=false)
     @Enumerated(EnumType.STRING)
     TodoType todoType;
+
+    @Column(name = "created_by", updatable = false, nullable = false)
+    @CreatedBy
+    private String createdBy;
+
+    @Column(name = "created_date")
+    @CreatedDate
+    private LocalDate createdDate;
+
+    @Column(name = "modified_by")
+    @LastModifiedBy
+    private String modifiedBy;
+
+    @Column(name = "modified_date")
+    @LastModifiedDate
+    private LocalDate modifiedDate;
 
     @PrePersist
     public void prePersist() {
