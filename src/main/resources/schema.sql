@@ -43,7 +43,7 @@ CREATE TABLE todos
     deadline_date                     DATE,
     estimated_completion_time_minutes INT,
     user_id                           INT         NOT NULL,
-    task_rating                       INT NULL,
+    todo_rating                       INT NULL,
     total_elapsed_seconds             INT DEFAULT 0,
     last_resumed_at                   TIMESTAMP NULL,
     habit_id                          INT NULL,

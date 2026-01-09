@@ -29,25 +29,25 @@ public class TodoController {
 
     @GetMapping("incomplete-todos")
     public ResponseEntity<ApiResponse> incompleteTodos(Authentication authentication) {
-        List<TodoDto> incompleteTasks = this.todoService.getIncompletedTodos(authentication.getName());
-        return ResponseEntity.ok(new ApiResponse(incompleteTasks));
+        List<TodoDto> incompleteTodos = this.todoService.getIncompletedTodos(authentication.getName());
+        return ResponseEntity.ok(new ApiResponse(incompleteTodos));
     }
 
     @PutMapping("start-todo")
     public ResponseEntity<ApiResponse> startTodo(@RequestParam Integer id, @RequestParam String type, Authentication authentication) {
-        TodoDto ongoingTask = todoService.startTodo( id, authentication.getName());
-        return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_STARTED, ongoingTask));
+        TodoDto ongoingTodo = todoService.startTodo( id, authentication.getName());
+        return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_STARTED, ongoingTodo));
     }
 
-    @PutMapping("pause-task")
+    @PutMapping("pause-todo")
     public ResponseEntity<ApiResponse> pauseTodo(@RequestParam Integer id, Authentication authentication) {
-        TodoDto ongoingTask = todoService.pauseTodo( id, authentication.getName());
-        return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_PAUSED, ongoingTask));
+        TodoDto ongoingTodo = todoService.pauseTodo( id, authentication.getName());
+        return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_PAUSED, ongoingTodo));
     }
 
     @PutMapping("todo-completed")
-    public ResponseEntity<ApiResponse> taskCompleted(@RequestParam Integer id, Authentication authentication) {
-        TodoDto completedTask = todoService.todoCompleted( id, authentication.getName());
-        return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_COMPLETED, completedTask));
+    public ResponseEntity<ApiResponse> todoCompleted(@RequestParam Integer id, Authentication authentication) {
+        TodoDto completedTodo = todoService.todoCompleted( id, authentication.getName());
+        return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_COMPLETED, completedTodo));
     }
 }

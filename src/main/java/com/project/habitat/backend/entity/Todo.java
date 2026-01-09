@@ -1,7 +1,7 @@
 package com.project.habitat.backend.entity;
 
 import com.project.habitat.backend.enums.TodoStatus;
-import com.project.habitat.backend.enums.TaskRating;
+import com.project.habitat.backend.enums.TodoRating;
 import com.project.habitat.backend.enums.TodoType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -40,9 +40,9 @@ public class Todo {
     @Column(name="estimated_completion_time_minutes")
     Integer estimatedCompletionTimeMinutes; // in minutes
 
-    @Column(name="task_rating", nullable=true)
+    @Column(name="todo_rating", nullable=true)
     @Enumerated(EnumType.ORDINAL)
-    TaskRating taskRating;
+    TodoRating todoRating;
 
     @Column(name="total_elapsed_seconds")
     Integer totalElapsedSeconds;

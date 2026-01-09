@@ -6,7 +6,8 @@ public enum ResponseMessage {
     ACCESS_DENIED("Access Denied"),
     TODO_STARTED("Todo started"),
     TODO_PAUSED("Todo paused"),
-    TODO_COMPLETED("Todo completed")
+    TODO_COMPLETED("Todo completed"),
+    HABIT_CREATED("Habit Created"),
     ;
     private final String message;
     ResponseMessage(String message) {

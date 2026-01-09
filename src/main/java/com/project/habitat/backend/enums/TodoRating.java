@@ -1,6 +1,6 @@
 package com.project.habitat.backend.enums;
 
-public enum TaskRating {
+public enum TodoRating {
     NOT_TOUCHED(0),
     BARELY_STARTED(1),
     SLIGHTLY_ENGAGED(2),
@@ -15,7 +15,7 @@ public enum TaskRating {
 
     private final int score;
 
-    TaskRating(int score) {
+    TodoRating(int score) {
         this.score = score;
     }
 

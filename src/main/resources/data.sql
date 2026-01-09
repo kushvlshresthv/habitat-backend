@@ -8,7 +8,7 @@ INSERT INTO todos (description,
                    uuid,
                    estimated_completion_time_minutes,
                    user_id,
-                   task_rating,
+                   todo_rating,
                    type)
 VALUES ('Learn Spring Boot basics', 'NOT_STARTED', CURDATE(), UUID(), 45, 1, NULL,'PURE'),
        ('Understand JPQL joins', 'NOT_STARTED', CURDATE(), UUID(), 30, 1, NULL, 'PURE'),
