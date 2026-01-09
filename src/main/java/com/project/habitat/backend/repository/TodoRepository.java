@@ -3,8 +3,10 @@ package com.project.habitat.backend.repository;
 import com.project.habitat.backend.entity.Todo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +21,17 @@ public interface TodoRepository extends JpaRepository<Todo, Integer> {
                   AND (t.status = 'NOT_STARTED' OR t.status='IN_PROGRESS' OR t.status='PAUSED')
             """)
     public List<Todo> getIncompleteTodos(String username);
+
+    @Query("""
+       SELECT t
+       FROM Todo t
+       JOIN t.user u
+       WHERE u.username = :username
+         AND (t.status = 'NOT_STARTED' OR t.status='IN_PROGRESS' OR t.status='PAUSED')
+         AND t.deadlineDate = :today
+       """)
+    List<Todo> getIncompleteTodosForDate(@Param("username") String username,
+                                         @Param("today") LocalDate today);
 
     @Query("""
                             SELECT t

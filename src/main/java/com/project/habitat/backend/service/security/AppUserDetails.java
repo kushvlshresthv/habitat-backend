@@ -10,15 +10,21 @@ public class AppUserDetails implements UserDetails {
     private final Integer userId;
     private final String username;
     private final String password;
+    private final String timezone;
 
-    public AppUserDetails(Integer userId, String username, String password) {
+    public AppUserDetails(Integer userId, String username, String password, String timezone) {
         this.userId = userId;
         this.username = username;
         this.password = password;
+        this.timezone = timezone;
     }
 
     public Integer getUserId() {
         return userId;
+    }
+
+    public String getTimeZone() {
+        return timezone;
     }
 
     @Override

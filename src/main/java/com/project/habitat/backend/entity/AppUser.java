@@ -2,6 +2,8 @@ package com.project.habitat.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +35,13 @@ public class AppUser {
     @Column(name = "password")
     String password;
 
+    @Column(name="timezone", nullable = false, length = 64)
+    private String timezone;
+
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     List<Todo> todos = new ArrayList<>();
+
+    public ZoneId getZoneId() {
+        return ZoneId.of(timezone);
+    }
 }

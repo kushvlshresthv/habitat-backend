@@ -5,8 +5,10 @@ import com.project.habitat.backend.dto.TodoCreationDto;
 import com.project.habitat.backend.response.ApiResponse;
 import com.project.habitat.backend.response.ResponseMessage;
 import com.project.habitat.backend.service.TodoService;
+import com.project.habitat.backend.service.security.AppUserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,8 +30,8 @@ public class TodoController {
     }
 
     @GetMapping("incomplete-todos")
-    public ResponseEntity<ApiResponse> incompleteTodos(Authentication authentication) {
-        List<TodoDto> incompleteTodos = this.todoService.getIncompletedTodos(authentication.getName());
+    public ResponseEntity<ApiResponse> incompleteTodos(@AuthenticationPrincipal AppUserDetails appUserDetails) {
+        List<TodoDto> incompleteTodos = this.todoService.getIncompleteTodosForToday(appUserDetails.getUsername(), appUserDetails.getTimeZone());
         return ResponseEntity.ok(new ApiResponse(incompleteTodos));
     }
 

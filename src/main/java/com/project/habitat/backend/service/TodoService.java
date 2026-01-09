@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +54,16 @@ public class TodoService {
 
     public List<TodoDto> getIncompletedTodos(String username) {
         List<Todo> incompleteTodos = todoRepository.getIncompleteTodos(username);
+        List<TodoDto> incompleteTodosDto = incompleteTodos.stream()
+                .map(TodoDto::new)
+                .toList();
+        return incompleteTodosDto;
+    }
+
+    public List<TodoDto> getIncompleteTodosForToday(String username, String timezone) {
+        ZoneId userZoneId = ZoneId.of(timezone);
+        LocalDate todayInUserTZ = LocalDate.now(userZoneId);
+        List<Todo> incompleteTodos = todoRepository.getIncompleteTodosForDate(username, todayInUserTZ);
         List<TodoDto> incompleteTodosDto = incompleteTodos.stream()
                 .map(TodoDto::new)
                 .toList();
