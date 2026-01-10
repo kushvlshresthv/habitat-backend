@@ -4,6 +4,7 @@ import com.project.habitat.backend.dto.TodoDto;
 import com.project.habitat.backend.dto.TodoCreationDto;
 import com.project.habitat.backend.entity.AppUser;
 import com.project.habitat.backend.entity.Todo;
+import com.project.habitat.backend.enums.TodoRating;
 import com.project.habitat.backend.enums.TodoStatus;
 import com.project.habitat.backend.enums.TodoType;
 import com.project.habitat.backend.exception.ExceptionMessage;
@@ -130,10 +131,26 @@ public class TodoService {
         return expiredTodosDto;
     }
 
+    public void rateTodo(Integer todoId, Integer ratingValue, Integer uid) {
+        if(ratingValue < 0 || ratingValue > 10) {
+            //throw IllegalRatingValueException
+            throw new RuntimeException();
+        }
+        Optional<Todo> optionalTodo = todoRepository.getUserTodoById(todoId, uid);
+        if(optionalTodo.isEmpty()) {
+            //throw TodoNotAccessibleException
+            throw new RuntimeException();
+        }
 
-    //A_TODO: NOT COMLETED
-//    public TodoDto todoCompleted(Integer todoId, String username) {
-//        Optional<Todo> retrievedTodoOptional = todoRepository.getUserTodoById(todoId, uid);
-//        return null;
-//    }
+        Todo targetTodo = optionalTodo.get();
+
+        if(targetTodo.getTotalElapsedSeconds() < targetTodo.getEstimatedCompletionTimeMinutes() * 60) {
+            //throw TodoNotYetCompletedException
+            throw new RuntimeException();
+        }
+
+        targetTodo.setStatus(TodoStatus.COMPLETED);
+        targetTodo.setTodoRating(TodoRating.fromScore(ratingValue));
+        todoRepository.save(targetTodo);
+    }
 }

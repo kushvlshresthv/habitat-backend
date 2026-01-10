@@ -53,9 +53,9 @@ public class TodoController {
         return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_PAUSED, ongoingTodo));
     }
 
-//    @PutMapping("todo-completed")
-//    public ResponseEntity<ApiResponse> todoCompleted(@RequestParam Integer id, Authentication authentication) {
-//        TodoDto completedTodo = todoService.todoCompleted( id, authentication.getName());
-//        return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_COMPLETED, completedTodo));
-//    }
+    @PutMapping("rate-todo")
+    public ResponseEntity<ApiResponse> rateTodo(@RequestParam Integer id, @RequestParam Integer ratingValue, @AuthenticationPrincipal AppUserDetails appUserDetails) {
+
+
+    }
 }

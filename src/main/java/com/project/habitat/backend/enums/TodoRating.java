@@ -19,6 +19,15 @@ public enum TodoRating {
         this.score = score;
     }
 
+    public static TodoRating fromScore(int score) {
+        for (TodoRating rating : values()) {
+            if (rating.score == score) {
+                return rating;
+            }
+        }
+        throw new IllegalArgumentException("Invalid TodoRating score: " + score);
+    }
+
     public int getScore() {
         return score;
     }
