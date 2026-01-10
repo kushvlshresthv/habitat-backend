@@ -42,7 +42,7 @@ public class TodoController {
     }
 
     @PutMapping("start-todo")
-    public ResponseEntity<ApiResponse> startTodo(@RequestParam Integer id, @RequestParam String type, Authentication authentication) {
+    public ResponseEntity<ApiResponse> startTodo(@RequestParam Integer id, Authentication authentication) {
         TodoDto ongoingTodo = todoService.startTodo( id, authentication.getName());
         return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_STARTED, ongoingTodo));
     }

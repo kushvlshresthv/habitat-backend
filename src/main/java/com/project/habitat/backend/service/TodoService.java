@@ -86,16 +86,16 @@ public class TodoService {
         Todo retrievedTodo = retrievedTodoOptional.get();
         if (retrievedTodo.getStatus() == TodoStatus.IN_PROGRESS) {
             //TODO: return that todo is already in pprogress
-        } else if (retrievedTodo.getStatus() == TodoStatus.CANCELLED) {
-            //TODO: return that todo is cancelled and cannot be started
         } else if (retrievedTodo.getStatus() == TodoStatus.COMPLETED) {
             //TODO: return that todo is comppleted and cannot be started
+        } else if (retrievedTodo.getStatus() == TodoStatus.NOT_STARTED || retrievedTodo.getStatus() == TodoStatus.PAUSED) {
+            retrievedTodo.setLastResumedAt(Instant.now());
+            retrievedTodo.setStatus(TodoStatus.IN_PROGRESS);
+            Todo savedTodo = todoRepository.save(retrievedTodo);
+            return new TodoDto(savedTodo);
         }
-
-        retrievedTodo.setLastResumedAt(Instant.now());
-        retrievedTodo.setStatus(TodoStatus.IN_PROGRESS);
-        Todo savedTodo = todoRepository.save(retrievedTodo);
-        return new TodoDto(savedTodo);
+        //A_TODO: throw unknown todo status exception
+        throw new RuntimeException();
     }
 
     public TodoDto pauseTodo(Integer todoId, String username) {
