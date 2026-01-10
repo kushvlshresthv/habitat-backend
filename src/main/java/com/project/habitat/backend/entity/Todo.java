@@ -56,9 +56,6 @@ public class Todo {
     @Column(name="last_resumed_at", nullable = true)
     Instant lastResumedAt;
 
-    @ManyToOne
-    @JoinColumn(name="user_id", referencedColumnName = "uid", nullable=false)
-    AppUser user;
 
     @ManyToOne
     @JoinColumn(name="habit_id", referencedColumnName="id", nullable = true)

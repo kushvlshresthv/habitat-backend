@@ -39,7 +39,6 @@ public class TodoService {
             throw new UserDoesNotExistException(ExceptionMessage.USER_DOES_NOT_EXIST);
         }
         Todo todo = Todo.builder().
-                user(user.get()).
                 description(todoCreationDto.getDescription()).
                 status(TodoStatus.NOT_STARTED).
                 deadlineDate(todoCreationDto.getDeadlineDate()).
@@ -52,32 +51,32 @@ public class TodoService {
 
     }
 
-    public List<TodoDto> getIncompletedTodos(String username) {
-        List<Todo> incompleteTodos = todoRepository.getIncompleteTodos(username);
+    public List<TodoDto> getIncompletedTodos(Integer uid) {
+        List<Todo> incompleteTodos = todoRepository.getIncompleteTodos(uid);
         List<TodoDto> incompleteTodosDto = incompleteTodos.stream()
                 .map(TodoDto::new)
                 .toList();
         return incompleteTodosDto;
     }
 
-    public List<TodoDto> getIncompleteTodosForToday(String username, String timezone) {
+    public List<TodoDto> getIncompleteTodosForToday(Integer uid, String timezone) {
         ZoneId userZoneId = ZoneId.of(timezone);
         LocalDate todayInUserTZ = LocalDate.now(userZoneId);
-        List<Todo> incompleteTodos = todoRepository.getIncompleteTodosForDate(username, todayInUserTZ);
+        List<Todo> incompleteTodos = todoRepository.getIncompleteTodosForDate(uid, todayInUserTZ);
         List<TodoDto> incompleteTodosDto = incompleteTodos.stream()
                 .map(TodoDto::new)
                 .toList();
         return incompleteTodosDto;
     }
 
-    public TodoDto startTodo(Integer todoId, String username) {
-        List<Todo> ongoingTodos = todoRepository.getOngoingTodo(username);
+    public TodoDto startTodo(Integer todoId, Integer uid) {
+        List<Todo> ongoingTodos = todoRepository.getOngoingTodo(uid);
         if (!ongoingTodos.isEmpty()) {
             throw new RuntimeException();
             //TODO: handle this exception properly
         }
 
-        Optional<Todo> retrievedTodoOptional = todoRepository.getUserTodoById(todoId, username);
+        Optional<Todo> retrievedTodoOptional = todoRepository.getUserTodoById(todoId, uid);
         if (retrievedTodoOptional.isEmpty()) {
             throw new RuntimeException();
             //TODO: handle this exception properly
@@ -98,8 +97,8 @@ public class TodoService {
         throw new RuntimeException();
     }
 
-    public TodoDto pauseTodo(Integer todoId, String username) {
-        Optional<Todo> retrievedTodoOptional = todoRepository.getUserTodoById(todoId, username);
+    public TodoDto pauseTodo(Integer todoId, Integer uid) {
+        Optional<Todo> retrievedTodoOptional = todoRepository.getUserTodoById(todoId, uid);
         if (retrievedTodoOptional.isEmpty()) {
             //TODO: throw exception
             throw new RuntimeException();
@@ -121,10 +120,10 @@ public class TodoService {
     }
 
 
-    public List<TodoDto> getExpiredTodos(String username, String timezone) {
+    public List<TodoDto> getExpiredTodos(Integer uid, String timezone) {
         ZoneId userZoneId = ZoneId.of(timezone);
         LocalDate todayInUserTZ = LocalDate.now(userZoneId);
-        List<Todo> expiredTodos = todoRepository.getExpiredTodos(username, todayInUserTZ);
+        List<Todo> expiredTodos = todoRepository.getExpiredTodos(uid, todayInUserTZ);
         List<TodoDto> expiredTodosDto = expiredTodos.stream()
                 .map(TodoDto::new)
                 .toList();
@@ -133,8 +132,8 @@ public class TodoService {
 
 
     //A_TODO: NOT COMLETED
-    public TodoDto todoCompleted(Integer todoId, String username) {
-        Optional<Todo> retrievedTodoOptional = todoRepository.getUserTodoById(todoId, username);
-        return null;
-    }
+//    public TodoDto todoCompleted(Integer todoId, String username) {
+//        Optional<Todo> retrievedTodoOptional = todoRepository.getUserTodoById(todoId, uid);
+//        return null;
+//    }
 }

@@ -16,53 +16,48 @@ public interface TodoRepository extends JpaRepository<Todo, Integer> {
     @Query("""
                 SELECT t
                 FROM Todo t
-                JOIN t.user u
-                WHERE u.username = :username
+                WHERE t.createdBy =: uid
                   AND (t.status = 'NOT_STARTED' OR t.status='IN_PROGRESS' OR t.status='PAUSED')
             """)
-    public List<Todo> getIncompleteTodos(String username);
+    public List<Todo> getIncompleteTodos(Integer uid);
 
     @Query("""
        SELECT t
        FROM Todo t
-       JOIN t.user u
-       WHERE u.username = :username
+       WHERE t.createdBy = :uid
          AND (t.status = 'NOT_STARTED' OR t.status='IN_PROGRESS' OR t.status='PAUSED')
          AND t.deadlineDate = :today
        """)
-    List<Todo> getIncompleteTodosForDate(@Param("username") String username,
+    List<Todo> getIncompleteTodosForDate(@Param("uid") Integer uid,
                                          @Param("today") LocalDate today);
 
 
     @Query("""
        SELECT t
        FROM Todo t
-       JOIN t.user u
-       WHERE u.username = :username
+       WHERE t.createdBy = :uid
          AND (t.status = 'NOT_STARTED' OR t.status='IN_PROGRESS' OR t.status='PAUSED')
          AND t.deadlineDate < :today
        """)
-    List<Todo> getExpiredTodos(@Param("username") String username,
+    List<Todo> getExpiredTodos(@Param("uid") Integer uid,
                                          @Param("today") LocalDate today);
 
 
     @Query("""
                             SELECT t
                             FROM Todo t
-                            JOIN t.user u
-                            WHERE u.username = :username
+                            WHERE t.createdBy = :uid
                               AND t.status = 'IN_PROGRESS'
             """)
 
-    public List<Todo> getOngoingTodo(String username);
+    public List<Todo> getOngoingTodo(Integer uid);
 
     @Query("""
                 SELECT t
                 FROM Todo t
-                JOIN t.user u
-                WHERE u.username = :username
+                WHERE t.createdBy = :uid
                   AND t.id = :todoId
             """)
 
-    public Optional<Todo> getUserTodoById(Integer todoId, String username);
+    public Optional<Todo> getUserTodoById(Integer todoId, Integer uid);
 }

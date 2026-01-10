@@ -38,8 +38,6 @@ public class AppUser {
     @Column(name="timezone", nullable = false, length = 64)
     private String timezone;
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    List<Todo> todos = new ArrayList<>();
 
     public ZoneId getZoneId() {
         return ZoneId.of(timezone);

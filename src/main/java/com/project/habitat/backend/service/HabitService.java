@@ -96,7 +96,6 @@ public class HabitService {
                 }
 
 
-                AppUser appUser = appUserRepository.findByUsername("username").get();
 
                 Todo habitTodo = Todo.builder().
                         description(habit.getName()).
@@ -107,7 +106,6 @@ public class HabitService {
                         estimatedCompletionTimeMinutes(frequency.getDurationMinutes()).
                         totalElapsedSeconds(0).
                         //remove AppUser and only store the user id
-                        user(appUser).
                         build();
 
                 habitTodos.add(habitTodo);
