@@ -9,6 +9,7 @@ public enum ResponseMessage {
     TODO_PAUSED("Todo paused"),
     TODO_COMPLETED("Todo completed"),
     HABIT_CREATED("Habit Created"),
+    TODO_RATED("Todo Rated"),
     ;
     private final String message;
     ResponseMessage(String message) {

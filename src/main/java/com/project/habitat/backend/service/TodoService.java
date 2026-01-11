@@ -111,9 +111,9 @@ public class TodoService {
             throw new RuntimeException();
         }
 
-        Integer newTotalElapsedSeconds = Duration.between(retrievedTodo.getLastResumedAt(), Instant.now()).toSecondsPart()
+        Long newTotalElapsedSeconds = Duration.between(retrievedTodo.getLastResumedAt(), Instant.now()).toSeconds()
                 + retrievedTodo.getTotalElapsedSeconds();
-        retrievedTodo.setTotalElapsedSeconds(newTotalElapsedSeconds);
+        retrievedTodo.setTotalElapsedSeconds(newTotalElapsedSeconds.intValue());
         retrievedTodo.setLastResumedAt(null);
         retrievedTodo.setStatus(TodoStatus.PAUSED);
         Todo savedTodo = todoRepository.save(retrievedTodo);
@@ -143,6 +143,12 @@ public class TodoService {
         }
 
         Todo targetTodo = optionalTodo.get();
+
+        //update the newTotalElapsedSeconds
+        Long newTotalElapsedSeconds = Duration.between(targetTodo.getLastResumedAt(), Instant.now()).toSeconds()
+                + targetTodo.getTotalElapsedSeconds();
+        targetTodo.setTotalElapsedSeconds((Integer)newTotalElapsedSeconds.intValue());
+        targetTodo.setLastResumedAt(null);
 
         if(targetTodo.getTotalElapsedSeconds() < targetTodo.getEstimatedCompletionTimeMinutes() * 60) {
             //throw TodoNotYetCompletedException

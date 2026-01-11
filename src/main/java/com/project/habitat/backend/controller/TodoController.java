@@ -55,7 +55,7 @@ public class TodoController {
 
     @PutMapping("rate-todo")
     public ResponseEntity<ApiResponse> rateTodo(@RequestParam Integer id, @RequestParam Integer ratingValue, @AuthenticationPrincipal AppUserDetails appUserDetails) {
-
-
+        todoService.rateTodo(id, ratingValue, appUserDetails.getUserId());
+        return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_RATED));
     }
 }
