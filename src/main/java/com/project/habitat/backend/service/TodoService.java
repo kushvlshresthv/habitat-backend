@@ -132,12 +132,12 @@ public class TodoService {
     }
 
     public void rateTodo(Integer todoId, Integer ratingValue, Integer uid) {
-        if(ratingValue < 0 || ratingValue > 10) {
+        if (ratingValue < 0 || ratingValue > 10) {
             //throw IllegalRatingValueException
             throw new RuntimeException();
         }
         Optional<Todo> optionalTodo = todoRepository.getUserTodoById(todoId, uid);
-        if(optionalTodo.isEmpty()) {
+        if (optionalTodo.isEmpty()) {
             //throw TodoNotAccessibleException
             throw new RuntimeException();
         }
@@ -147,16 +147,25 @@ public class TodoService {
         //update the newTotalElapsedSeconds
         Long newTotalElapsedSeconds = Duration.between(targetTodo.getLastResumedAt(), Instant.now()).toSeconds()
                 + targetTodo.getTotalElapsedSeconds();
-        targetTodo.setTotalElapsedSeconds((Integer)newTotalElapsedSeconds.intValue());
+        targetTodo.setTotalElapsedSeconds((Integer) newTotalElapsedSeconds.intValue());
         targetTodo.setLastResumedAt(null);
 
-        if(targetTodo.getTotalElapsedSeconds() < targetTodo.getEstimatedCompletionTimeMinutes() * 60) {
+        if (targetTodo.getTotalElapsedSeconds() < targetTodo.getEstimatedCompletionTimeMinutes() * 60) {
             //throw TodoNotYetCompletedException
             throw new RuntimeException();
         }
 
         targetTodo.setStatus(TodoStatus.COMPLETED);
         targetTodo.setTodoRating(TodoRating.fromScore(ratingValue));
+
+        Optional<AppUser> appUserOptional = appUserRepository.findById(uid);
+        if (appUserOptional.isEmpty()) throw new UserDoesNotExistException(ExceptionMessage.USER_DOES_NOT_EXIST);
+
+        AppUser appUser = appUserOptional.get();
+
+        appUser.rewardXp(targetTodo.getEstimatedCompletionTimeMinutes(), ratingValue );
+
+        appUserRepository.save(appUser);
         todoRepository.save(targetTodo);
     }
 }

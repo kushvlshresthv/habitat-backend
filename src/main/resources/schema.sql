@@ -11,6 +11,18 @@ CREATE TABLE app_users
     xp        INT          NOT NULL
 );
 
+CREATE TABLE user_weekly_xp
+(
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    uid        INT  NOT NULL,
+    week_start DATE NOT NULL,
+    xp         INT  NOT NULL,
+    UNIQUE KEY uq_user_week_start (uid, week_start),
+    CONSTRAINT fk_user_weekly_xp_user FOREIGN KEY (uid)
+        REFERENCES app_users (uid)
+        ON DELETE CASCADE
+);
+
 CREATE TABLE habits
 (
     id            INT AUTO_INCREMENT PRIMARY KEY,

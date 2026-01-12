@@ -5,7 +5,12 @@ import com.project.habitat.backend.exception.InvalidRatingException;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAdjusters;
+import java.util.List;
 
 @Getter
 @Setter
@@ -48,24 +53,44 @@ public class AppUser {
     @Column(name = "xp", nullable = false)
     private Integer xp;
 
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST})
+    private List<AppUserWeeklyXp> weeklyXps;
+
     public ZoneId getZoneId() {
         return ZoneId.of(timezone);
     }
 
-    public void rewardXp(int minutes, int todoCompletionTimeMinutes, int rating) {
-        if (minutes <= 0) return;
-        if(todoCompletionTimeMinutes <= 0) return;
-        if(rating < 0 || rating > 10) throw new InvalidRatingException(ExceptionMessage.INVALID_RATING);
+    public void rewardXp(int todoCompletionTimeMinutes, int rating) {
+        if (todoCompletionTimeMinutes <= 0) return;
+        if (rating < 0 || rating > 10) throw new InvalidRatingException(ExceptionMessage.INVALID_RATING);
 
-        float earnedXp = (minutes * XP_MULTIPLIER * rating) /RATING_NORMALIZER;
-        float todoCompletionXp =  (todoCompletionTimeMinutes * TODO_COMPLETION_XP_MULTIPLIER);
+        float earnedXp = (todoCompletionTimeMinutes * XP_MULTIPLIER * rating) / RATING_NORMALIZER;
+        float todoCompletionXp = (todoCompletionTimeMinutes * TODO_COMPLETION_XP_MULTIPLIER);
         int totalXpToAdd = (int) Math.ceil(earnedXp + todoCompletionXp);
+        int newXp = this.xp + totalXpToAdd;
 
-        if((this.xp + totalXpToAdd) >= XP_PER_LEVEL) {
-            this.xp = (this.xp + totalXpToAdd) % XP_PER_LEVEL;
+        while (newXp >= XP_PER_LEVEL) {
+            newXp -= XP_PER_LEVEL;
             this.level++;
-        } else {
-            this.xp = this.xp + totalXpToAdd;
         }
+
+        this.xp = newXp;
+
+        LocalDate weekStart = getWeekStart(getZoneId());
+
+        AppUserWeeklyXp weeklyXp =
+                this.weeklyXps.stream().filter(weekly -> weekly.getWeekStart().isEqual(weekStart)).findFirst().orElse(null);
+
+        if (weeklyXp == null) {
+            weeklyXps.add(AppUserWeeklyXp.builder().weekStart(weekStart).xp(totalXpToAdd).user(this).build());
+        } else {
+            weeklyXp.setXp(weeklyXp.getXp() + totalXpToAdd);
+        }
+    }
+
+    public LocalDate getWeekStart(ZoneId zoneId) {
+        return ZonedDateTime.now(zoneId)
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+                .toLocalDate();
     }
 }
