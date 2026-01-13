@@ -17,7 +17,7 @@ import java.time.LocalDate;
         }
 )
 @Getter
-public class AppUserWeeklyXp {
+public class WeeklyXp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -37,6 +37,12 @@ pause_todo() {
   echo
 }
 
+
+weekly_leaderboards() {
+  echo "Loading weekly leaderboards..."
+  curl -X GET "$BASE_URL/api/weekly-leaderboards" -u $USER:$PASS | jq
+  echo
+}
 ## Another endpoint example
 #get_all_todos() {
 #  echo "Fetching all todos..."

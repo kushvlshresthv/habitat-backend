@@ -2,6 +2,10 @@ INSERT INTO app_users (username, password, email, firstname, lastname, timezone,
 VALUES ('username', '{noop}password', 'username@gmail.com', 'admin', 'admin', 'Asia/Kathmandu', 1, 0),
        ('nousername', '{noop}password', 'username@gmail.com', 'admin', 'admin', 'Asia/Kathmandu', 1, 0);
 
+INSERT INTO user_weekly_xp (uid, week_start, xp)
+VALUES (1, '2026-01-12', 1200),
+       (2, '2026-01-12', 980);
+
 
 INSERT INTO todos (description,
                    status,
@@ -13,7 +17,7 @@ INSERT INTO todos (description,
                    type,
                    created_by,
                    created_date)
-VALUES ('Learn Spring Boot basics', 'NOT_STARTED','2026-01-05', UUID(), 45, 1, NULL, 'PURE', '1', CURDATE()),
+VALUES ('Learn Spring Boot basics', 'NOT_STARTED', '2026-01-05', UUID(), 45, 1, NULL, 'PURE', '1', CURDATE()),
        ('Understand JPQL joins', 'NOT_STARTED', CURDATE(), UUID(), 1, 1, NULL, 'PURE', '1', CURDATE()),
        ('Implement JWT authentication', 'NOT_STARTED', CURDATE(), UUID(), 1, 1, NULL, 'PURE', '1', CURDATE()),
        ('Revise Data Communication notes', 'NOT_STARTED', CURDATE(), UUID(), 1, 1, NULL, 'PURE', '1', CURDATE()),

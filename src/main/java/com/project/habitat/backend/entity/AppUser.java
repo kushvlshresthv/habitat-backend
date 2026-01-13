@@ -54,7 +54,7 @@ public class AppUser {
     private Integer xp;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST})
-    private List<AppUserWeeklyXp> weeklyXps;
+    private List<WeeklyXp> weeklyXps;
 
     public ZoneId getZoneId() {
         return ZoneId.of(timezone);
@@ -78,11 +78,11 @@ public class AppUser {
 
         LocalDate weekStart = getWeekStart(getZoneId());
 
-        AppUserWeeklyXp weeklyXp =
+        WeeklyXp weeklyXp =
                 this.weeklyXps.stream().filter(weekly -> weekly.getWeekStart().isEqual(weekStart)).findFirst().orElse(null);
 
         if (weeklyXp == null) {
-            weeklyXps.add(AppUserWeeklyXp.builder().weekStart(weekStart).xp(totalXpToAdd).user(this).build());
+            weeklyXps.add(WeeklyXp.builder().weekStart(weekStart).xp(totalXpToAdd).user(this).build());
         } else {
             weeklyXp.setXp(weeklyXp.getXp() + totalXpToAdd);
         }
