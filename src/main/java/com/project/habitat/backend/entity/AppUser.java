@@ -20,10 +20,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 public class AppUser {
-    private static final int XP_MULTIPLIER = 2;
     private static final int XP_PER_LEVEL = 1000;
-    private static final float RATING_NORMALIZER = 10f;
-    private static final float TODO_COMPLETION_XP_MULTIPLIER = 0.2f;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,24 +57,14 @@ public class AppUser {
         return ZoneId.of(timezone);
     }
 
-    public void rewardXp(int todoCompletionTimeMinutes, int rating) {
-        if (todoCompletionTimeMinutes <= 0) return;
-        if (rating < 0 || rating > 10) throw new InvalidRatingException(ExceptionMessage.INVALID_RATING);
-
-        float earnedXp = (todoCompletionTimeMinutes * XP_MULTIPLIER * rating) / RATING_NORMALIZER;
-        float todoCompletionXp = (todoCompletionTimeMinutes * TODO_COMPLETION_XP_MULTIPLIER);
-        int totalXpToAdd = (int) Math.ceil(earnedXp + todoCompletionXp);
+    public void addXp(int totalXpToAdd) {
         int newXp = this.xp + totalXpToAdd;
-
         while (newXp >= XP_PER_LEVEL) {
             newXp -= XP_PER_LEVEL;
             this.level++;
         }
-
         this.xp = newXp;
-
         LocalDate weekStart = getWeekStart(getZoneId());
-
         WeeklyXp weeklyXp =
                 this.weeklyXps.stream().filter(weekly -> weekly.getWeekStart().isEqual(weekStart)).findFirst().orElse(null);
 

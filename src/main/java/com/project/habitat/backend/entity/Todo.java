@@ -43,6 +43,9 @@ public class Todo {
     @Column(name="deadline_date")
     LocalDate deadlineDate;
 
+    @Column(name="completion_date", nullable = true)
+    LocalDate completionDate;
+
     @Column(name="estimated_completion_time_minutes")
     Integer estimatedCompletionTimeMinutes; // in minutes
 

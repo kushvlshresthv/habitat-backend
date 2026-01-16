@@ -16,31 +16,45 @@ public interface TodoRepository extends JpaRepository<Todo, Integer> {
     @Query("""
                 SELECT t
                 FROM Todo t
+                WHERE t.createdBy = :uid
+                            AND t.status = 'COMPLETED'
+                AND t.completionDate >= :startDate
+                AND t.completionDate <= :endDate
+            """)
+    List<Todo> getCompletedTodosBetween(
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            @Param("uid") Integer uid
+    );
+
+    @Query("""
+                SELECT t
+                FROM Todo t
                 WHERE t.createdBy =: uid
                   AND (t.status = 'NOT_STARTED' OR t.status='IN_PROGRESS' OR t.status='PAUSED')
             """)
     public List<Todo> getIncompleteTodos(Integer uid);
 
     @Query("""
-       SELECT t
-       FROM Todo t
-       WHERE t.createdBy = :uid
-         AND (t.status = 'NOT_STARTED' OR t.status='IN_PROGRESS' OR t.status='PAUSED')
-         AND t.deadlineDate = :today
-       """)
+            SELECT t
+            FROM Todo t
+            WHERE t.createdBy = :uid
+              AND (t.status = 'NOT_STARTED' OR t.status='IN_PROGRESS' OR t.status='PAUSED')
+              AND t.deadlineDate = :today
+            """)
     List<Todo> getIncompleteTodosForDate(@Param("uid") Integer uid,
                                          @Param("today") LocalDate today);
 
 
     @Query("""
-       SELECT t
-       FROM Todo t
-       WHERE t.createdBy = :uid
-         AND (t.status = 'NOT_STARTED' OR t.status='IN_PROGRESS' OR t.status='PAUSED')
-         AND t.deadlineDate < :today
-       """)
+            SELECT t
+            FROM Todo t
+            WHERE t.createdBy = :uid
+              AND (t.status = 'NOT_STARTED' OR t.status='IN_PROGRESS' OR t.status='PAUSED')
+              AND t.deadlineDate < :today
+            """)
     List<Todo> getExpiredTodos(@Param("uid") Integer uid,
-                                         @Param("today") LocalDate today);
+                               @Param("today") LocalDate today);
 
 
     @Query("""

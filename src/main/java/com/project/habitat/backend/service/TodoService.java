@@ -1,5 +1,6 @@
 package com.project.habitat.backend.service;
 
+import com.project.habitat.backend.dto.ActivityDto;
 import com.project.habitat.backend.dto.TodoDto;
 import com.project.habitat.backend.dto.TodoCreationDto;
 import com.project.habitat.backend.entity.AppUser;
@@ -14,23 +15,25 @@ import com.project.habitat.backend.repository.TodoRepository;
 import com.project.habitat.backend.utils.EntityValidator;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TodoService {
     AppUserRepository appUserRepository;
     TodoRepository todoRepository;
     EntityValidator entityValidator;
+    XpCalculationService xpCalculationService;
 
-    TodoService(AppUserRepository appUserRepository, TodoRepository todoRepository, EntityValidator entityValidator) {
+    TodoService(AppUserRepository appUserRepository, TodoRepository todoRepository, EntityValidator entityValidator, XpCalculationService xpCalculationService) {
         this.appUserRepository = appUserRepository;
         this.todoRepository = todoRepository;
         this.entityValidator = entityValidator;
+        this.xpCalculationService = xpCalculationService;
     }
 
     public void createNewTodo(TodoCreationDto todoCreationDto, String username) {
@@ -156,16 +159,46 @@ public class TodoService {
         }
 
         targetTodo.setStatus(TodoStatus.COMPLETED);
+        targetTodo.setCompletionDate(LocalDate.now(ZoneOffset.UTC));
         targetTodo.setTodoRating(TodoRating.fromScore(ratingValue));
 
         Optional<AppUser> appUserOptional = appUserRepository.findById(uid);
         if (appUserOptional.isEmpty()) throw new UserDoesNotExistException(ExceptionMessage.USER_DOES_NOT_EXIST);
 
         AppUser appUser = appUserOptional.get();
+        Integer xpToAdd = xpCalculationService.calculateXp(targetTodo);
 
-        appUser.rewardXp(targetTodo.getEstimatedCompletionTimeMinutes(), ratingValue );
-
+        appUser.addXp(xpToAdd);
         appUserRepository.save(appUser);
         todoRepository.save(targetTodo);
+    }
+
+
+    public List<ActivityDto> getAllCompletedTodosOfLast365Days(Integer uid) {
+
+        LocalDate today = LocalDate.now(ZoneOffset.UTC);
+        LocalDate startDate = today.minusDays(364); // inclusive 365 days
+
+        List<Todo> completedTodos =
+                todoRepository.getCompletedTodosBetween(startDate, today, uid);
+
+
+        Map<LocalDate, Integer> xpPerDay =
+                completedTodos.stream()
+                        .collect(Collectors.groupingBy(
+                                Todo::getCompletionDate,
+                                Collectors.summingInt(xpCalculationService::calculateXp)
+                        ));
+
+        List<ActivityDto> activities = new ArrayList<>(365);
+
+        for (LocalDate date = startDate; !date.isAfter(today); date = date.plusDays(1)) {
+            ActivityDto activity = new ActivityDto();
+            activity.setLocalDate(date);
+            activity.setXp(xpPerDay.getOrDefault(date, 0));
+            activities.add(activity);
+        }
+
+        return activities;
     }
 }

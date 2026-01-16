@@ -60,6 +60,7 @@ CREATE TABLE todos
     description                       TEXT         NOT NULL,
     status                            VARCHAR(50)  NOT NULL,
     deadline_date                     DATE,
+    completion_date                   DATE NULL,
     estimated_completion_time_minutes INT,
     user_id                           INT          NOT NULL,
     todo_rating                       INT NULL,
