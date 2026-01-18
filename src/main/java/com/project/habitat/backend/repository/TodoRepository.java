@@ -1,6 +1,9 @@
 package com.project.habitat.backend.repository;
 
+import com.project.habitat.backend.dto.TodoCompletionActivityDto;
 import com.project.habitat.backend.entity.Todo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -109,4 +112,20 @@ public interface TodoRepository extends JpaRepository<Todo, Integer> {
             WHERE t.status = 'IN_PROGRESS'
             """)
     Long countOngoingTodos();
+
+    @Query("""
+                SELECT new com.project.habitat.backend.dto.TodoCompletionActivityDto(
+                    u.username,
+                    t.estimatedCompletionTimeMinutes,
+                    t.todoRating,
+                    t.completedAt
+                )
+            FROM Todo t
+            JOIN AppUser u
+              ON u.uid = t.createdBy
+            WHERE t.status = 'COMPLETED'
+              AND t.completedAt IS NOT NULL
+            ORDER BY t.completedAt DESC
+            """)
+    Page<TodoCompletionActivityDto> findRecentCompletedTodos(Pageable pageable);
 }

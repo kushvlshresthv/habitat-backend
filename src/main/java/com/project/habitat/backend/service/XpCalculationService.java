@@ -7,8 +7,6 @@ import com.project.habitat.backend.exception.TodoNotCompletedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class XpCalculationService {
@@ -27,7 +25,7 @@ public class XpCalculationService {
         return calculateXp(todoCompletionTimeMinutes, rating);
     }
 
-    private Integer calculateXp(Integer todoCompletionTimeMinutes, Integer rating) {
+    public Integer calculateXp(Integer todoCompletionTimeMinutes, Integer rating) {
         float earnedXp = (todoCompletionTimeMinutes * XP_MULTIPLIER * rating) / RATING_NORMALIZER;
         float todoCompletionXp = (todoCompletionTimeMinutes * TODO_COMPLETION_XP_MULTIPLIER);
 

@@ -33,9 +33,9 @@ CREATE TABLE habits
     cheat_days    INT,
     uuid          VARCHAR(36)  NOT NULL UNIQUE,
     streak        INT,
-    created_by    VARCHAR(255) NOT NULL,
+    created_by    INT NOT NULL,
     created_date  DATE         NOT NULL,
-    modified_by   VARCHAR(255) NULL,
+    modified_by   INT NULL,
     modified_date DATE NULL,
     CONSTRAINT uq_habits_uuid UNIQUE (uuid)
 );
@@ -68,9 +68,9 @@ CREATE TABLE todos
     last_resumed_at                   TIMESTAMP NULL,
     habit_id                          INT NULL,
     type                              VARCHAR(50)  NOT NULL,
-    created_by                        VARCHAR(255) NOT NULL,
+    created_by                        INT NOT NULL,
     created_date                      DATE         NOT NULL,
-    modified_by                       VARCHAR(255) NULL,
+    modified_by                       INT NULL,
     modified_date                     DATE NULL,
 
     CONSTRAINT fk_todos_user

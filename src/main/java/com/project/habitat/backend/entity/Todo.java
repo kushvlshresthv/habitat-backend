@@ -71,7 +71,7 @@ public class Todo {
 
     @Column(name = "created_by", updatable = false, nullable = false)
     @CreatedBy
-    private String createdBy;
+    private Integer createdBy;
 
     @Column(name = "created_date")
     @CreatedDate
@@ -79,7 +79,7 @@ public class Todo {
 
     @Column(name = "modified_by")
     @LastModifiedBy
-    private String modifiedBy;
+    private Integer modifiedBy;
 
     @Column(name = "modified_date")
     @LastModifiedDate

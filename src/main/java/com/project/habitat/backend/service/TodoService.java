@@ -1,6 +1,7 @@
 package com.project.habitat.backend.service;
 
 import com.project.habitat.backend.dto.ActivityDto;
+import com.project.habitat.backend.dto.TodoCompletionActivityDto;
 import com.project.habitat.backend.dto.TodoDto;
 import com.project.habitat.backend.dto.TodoCreationDto;
 import com.project.habitat.backend.entity.AppUser;
@@ -13,6 +14,9 @@ import com.project.habitat.backend.exception.UserDoesNotExistException;
 import com.project.habitat.backend.repository.AppUserRepository;
 import com.project.habitat.backend.repository.TodoRepository;
 import com.project.habitat.backend.utils.EntityValidator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
@@ -200,5 +204,21 @@ public class TodoService {
         }
 
         return activities;
+    }
+
+    public List<TodoCompletionActivityDto> getRecentlyCompletedTodos(Integer pageNumber) {
+        Pageable pageable = PageRequest.of(
+                pageNumber,
+                20
+        );
+        Page<TodoCompletionActivityDto> todoCompletionActivitiesPage = todoRepository.findRecentCompletedTodos(pageable);
+
+        List<TodoCompletionActivityDto> todoCompletionActivites = todoCompletionActivitiesPage.getContent();
+
+        todoCompletionActivites.forEach(todo -> {
+            todo.setXp(xpCalculationService.calculateXp(todo.getEstimatedCompletionTimeMinutes(), todo.getRating()));
+        });
+
+        return todoCompletionActivites;
     }
 }

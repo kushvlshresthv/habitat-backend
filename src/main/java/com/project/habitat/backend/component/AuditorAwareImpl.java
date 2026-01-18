@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component("auditAwareImpl")
-public class AuditorAwareImpl implements AuditorAware<String> {
+public class AuditorAwareImpl implements AuditorAware<Integer> {
     @Override
-    public Optional<String> getCurrentAuditor() {
+    public Optional<Integer> getCurrentAuditor() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -22,6 +22,6 @@ public class AuditorAwareImpl implements AuditorAware<String> {
 
         AppUserDetails appUserDetails = (AppUserDetails)authentication.getPrincipal();
         System.out.println("Audit aware has been executed");
-        return Optional.of(appUserDetails.getUserId().toString());
+        return Optional.of(appUserDetails.getUserId());
     }
 }
