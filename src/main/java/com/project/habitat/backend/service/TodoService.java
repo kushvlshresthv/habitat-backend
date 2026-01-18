@@ -159,7 +159,7 @@ public class TodoService {
         }
 
         targetTodo.setStatus(TodoStatus.COMPLETED);
-        targetTodo.setCompletionDate(LocalDate.now(ZoneOffset.UTC));
+        targetTodo.setCompletedAt(LocalDateTime.now(ZoneOffset.UTC));
         targetTodo.setTodoRating(TodoRating.fromScore(ratingValue));
 
         Optional<AppUser> appUserOptional = appUserRepository.findById(uid);
@@ -180,7 +180,7 @@ public class TodoService {
         LocalDate startDate = today.minusDays(364); // inclusive 365 days
 
         List<Todo> completedTodos =
-                todoRepository.getCompletedTodosBetween(startDate, today, uid);
+                todoRepository.getCompletedTodosBetween(startDate.atStartOfDay(), today.plusDays(1).atStartOfDay(), uid);
 
 
         Map<LocalDate, Integer> xpPerDay =
@@ -194,7 +194,7 @@ public class TodoService {
 
         for (LocalDate date = startDate; !date.isAfter(today); date = date.plusDays(1)) {
             ActivityDto activity = new ActivityDto();
-            activity.setLocalDate(date);
+            activity.setDate(date);
             activity.setXp(xpPerDay.getOrDefault(date, 0));
             activities.add(activity);
         }

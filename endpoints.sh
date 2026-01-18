@@ -48,7 +48,16 @@ activities() {
   echo "Loading activities..."
   curl -X GET "$BASE_URL/api/activities" -u $USER:$PASS | jq
   echo
+
 }
+
+community_summary() {
+  echo "Loading community summary..."
+  curl -X GET "$BASE_URL/api/community-summary" -u $USER:$PASS | jq
+  echo
+
+}
+
 
 
 ## Another endpoint example

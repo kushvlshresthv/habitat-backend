@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -43,13 +44,13 @@ public class Todo {
     @Column(name="deadline_date")
     LocalDate deadlineDate;
 
-    @Column(name="completion_date", nullable = true)
-    LocalDate completionDate;
+    @Column(name="completed_at", nullable = true)
+    LocalDateTime completedAt;
 
     @Column(name="estimated_completion_time_minutes")
     Integer estimatedCompletionTimeMinutes; // in minutes
 
-    @Column(name="todo_rating", nullable=true)
+    @Column(name="rating", nullable=true)
     @Enumerated(EnumType.ORDINAL)
     TodoRating todoRating;
 
@@ -104,5 +105,9 @@ public class Todo {
 
         Todo that = (Todo) o;
         return Objects.equals(uuid, that.uuid);
+    }
+
+    public LocalDate getCompletionDate() {
+        return this.completedAt.toLocalDate();
     }
 }

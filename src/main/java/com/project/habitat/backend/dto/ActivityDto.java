@@ -8,6 +8,6 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class ActivityDto {
-    LocalDate localDate;
+    LocalDate date;
     Integer xp;
 }
