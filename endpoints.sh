@@ -55,7 +55,12 @@ community_summary() {
   echo "Loading community summary..."
   curl -X GET "$BASE_URL/api/community-summary" -u $USER:$PASS | jq
   echo
+}
 
+recent_completions() {
+  echo "Loading recent completions..."
+  curl -X GET "$BASE_URL/api/recent-completions?pageNumber=0" -u $USER:$PASS | jq
+  echo
 }
 
 

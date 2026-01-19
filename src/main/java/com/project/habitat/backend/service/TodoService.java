@@ -20,10 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -219,6 +216,10 @@ public class TodoService {
             todo.setXp(xpCalculationService.calculateXp(todo.getEstimatedCompletionTimeMinutes(), todo.getRating()));
         });
 
-        return todoCompletionActivites;
+        List<TodoCompletionActivityDto> sortedTodoCompletionActivities = todoCompletionActivites.stream()
+                .sorted(Comparator.comparing(TodoCompletionActivityDto::getCompletionTime))
+                .toList();
+
+        return sortedTodoCompletionActivities;
     }
 }

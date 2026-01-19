@@ -41,20 +41,3 @@ public class AuditorAwareImpl implements AuditorAware<AppUser> {
         return Optional.of(userRef);
     }
 }
-
-//@Component("auditAwareImpl")
-//public class AuditorAwareImpl implements AuditorAware<Integer> {
-//    @Override
-//    public Optional<Integer> getCurrentAuditor() {
-//
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        if(authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
-//            return Optional.empty();
-//        }
-//
-//        AppUserDetails appUserDetails = (AppUserDetails)authentication.getPrincipal();
-//        System.out.println("Audit aware has been executed");
-//        return Optional.of(appUserDetails.getUserId());
-//    }
-//}

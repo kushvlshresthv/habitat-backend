@@ -3,8 +3,8 @@ VALUES ('username', '{noop}password', 'username@gmail.com', 'admin', 'admin', 'A
        ('nousername', '{noop}password', 'username@gmail.com', 'admin', 'admin', 'Asia/Kathmandu', 1, 0);
 
 INSERT INTO user_weekly_xp (uid, week_start, xp)
-VALUES (1, '2026-01-12', 1200),
-       (2, '2026-01-12', 980);
+VALUES (1, '2026-01-19', 1200),
+       (2, '2026-01-19', 980);
 
 
 INSERT INTO todos (description,
