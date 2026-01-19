@@ -31,12 +31,15 @@ CREATE TABLE habits
     start_date    DATE,
     end_date      DATE,
     cheat_days    INT,
-    uuid          VARCHAR(36)  NOT NULL UNIQUE,
+    uuid          VARCHAR(36) NOT NULL UNIQUE,
     streak        INT,
-    created_by    INT NOT NULL,
-    created_date  DATE         NOT NULL,
+    created_by    INT         NOT NULL,
+    created_date  DATE        NOT NULL,
     modified_by   INT NULL,
     modified_date DATE NULL,
+    CONSTRAINT fk_habits_user
+        FOREIGN KEY (created_by)
+            REFERENCES app_users (uid),
     CONSTRAINT uq_habits_uuid UNIQUE (uuid)
 );
 
@@ -56,25 +59,24 @@ CREATE TABLE habit_frequency
 CREATE TABLE todos
 (
     id                                INT AUTO_INCREMENT PRIMARY KEY,
-    uuid                              VARCHAR(36)  NOT NULL UNIQUE,
-    description                       TEXT         NOT NULL,
-    status                            VARCHAR(50)  NOT NULL,
+    uuid                              VARCHAR(36) NOT NULL UNIQUE,
+    description                       TEXT        NOT NULL,
+    status                            VARCHAR(50) NOT NULL,
     deadline_date                     DATE,
     completed_at                      DATETIME NULL,
     estimated_completion_time_minutes INT,
-    user_id                           INT          NOT NULL,
-    rating                       INT NULL,
+    rating                            INT NULL,
     total_elapsed_seconds             INT DEFAULT 0,
     last_resumed_at                   TIMESTAMP NULL,
     habit_id                          INT NULL,
-    type                              VARCHAR(50)  NOT NULL,
-    created_by                        INT NOT NULL,
-    created_date                      DATE         NOT NULL,
+    type                              VARCHAR(50) NOT NULL,
+    created_by                        INT         NOT NULL,
+    created_date                      DATE        NOT NULL,
     modified_by                       INT NULL,
     modified_date                     DATE NULL,
 
     CONSTRAINT fk_todos_user
-        FOREIGN KEY (user_id)
+        FOREIGN KEY (created_by)
             REFERENCES app_users (uid),
 
     CONSTRAINT fk_todos_habit

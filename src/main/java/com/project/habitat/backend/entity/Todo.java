@@ -30,60 +30,62 @@ public class Todo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    //using uuid for comparison instead of id because id is not assigned until the entity is stored in the database
-    @Column(name = "uuid", nullable = false, unique = true, updatable = false)
-    private String uuid;
-
-    @Column(name="description")
+    @Column(name = "description")
     String description;
 
-    @Column(name="status")
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    TodoStatus status ;
+    TodoStatus status;
 
-    @Column(name="deadline_date")
+    @Column(name = "deadline_date")
     LocalDate deadlineDate;
 
-    @Column(name="completed_at", nullable = true)
+    @Column(name = "completed_at", nullable = true)
     LocalDateTime completedAt;
 
-    @Column(name="estimated_completion_time_minutes")
+    @Column(name = "estimated_completion_time_minutes")
     Integer estimatedCompletionTimeMinutes; // in minutes
 
-    @Column(name="rating", nullable=true)
+    @Column(name = "rating", nullable = true)
     @Enumerated(EnumType.ORDINAL)
     TodoRating todoRating;
 
-    @Column(name="total_elapsed_seconds")
+    @Column(name = "total_elapsed_seconds")
     Integer totalElapsedSeconds;
 
-    @Column(name="last_resumed_at", nullable = true)
+    @Column(name = "last_resumed_at", nullable = true)
     Instant lastResumedAt;
 
-
     @ManyToOne
-    @JoinColumn(name="habit_id", referencedColumnName="id", nullable = true)
+    @JoinColumn(name = "habit_id", referencedColumnName = "id", nullable = true)
     Habit habit;
 
-    @Column(name="type", nullable=false)
+    @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
     TodoType todoType;
 
-    @Column(name = "created_by", updatable = false, nullable = false)
     @CreatedBy
-    private Integer createdBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false, updatable = false)
+    private AppUser createdBy;
 
     @Column(name = "created_date")
     @CreatedDate
     private LocalDate createdDate;
 
-    @Column(name = "modified_by")
+
     @LastModifiedBy
-    private Integer modifiedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "modified_by")
+    private AppUser modifiedBy;
 
     @Column(name = "modified_date")
     @LastModifiedDate
     private LocalDate modifiedDate;
+
+    //using uuid for comparison instead of id because id is not assigned until the entity is stored in the database
+    @Column(name = "uuid", nullable = false, unique = true, updatable = false)
+    private String uuid;
 
     @PrePersist
     public void prePersist() {

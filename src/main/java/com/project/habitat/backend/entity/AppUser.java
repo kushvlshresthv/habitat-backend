@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -52,6 +53,12 @@ public class AppUser {
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST})
     private List<WeeklyXp> weeklyXps;
+
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
+    private List<Todo> todos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
+    private List<Todo> habits = new ArrayList<>();
 
     public ZoneId getZoneId() {
         return ZoneId.of(timezone);

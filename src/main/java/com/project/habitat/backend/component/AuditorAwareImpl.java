@@ -1,6 +1,9 @@
 package com.project.habitat.backend.component;
 
+import com.project.habitat.backend.entity.AppUser;
 import com.project.habitat.backend.service.security.AppUserDetails;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -10,18 +13,48 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component("auditAwareImpl")
-public class AuditorAwareImpl implements AuditorAware<Integer> {
+public class AuditorAwareImpl implements AuditorAware<AppUser> {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Override
-    public Optional<Integer> getCurrentAuditor() {
+    public Optional<AppUser> getCurrentAuditor() {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
             return Optional.empty();
         }
 
-        AppUserDetails appUserDetails = (AppUserDetails)authentication.getPrincipal();
-        System.out.println("Audit aware has been executed");
-        return Optional.of(appUserDetails.getUserId());
+        AppUserDetails appUserDetails =
+                (AppUserDetails) authentication.getPrincipal();
+
+        Integer userId = appUserDetails.getUserId();
+
+        // IMPORTANT: this does NOT hit the DB
+        AppUser userRef = entityManager.getReference(AppUser.class, userId);
+
+        return Optional.of(userRef);
     }
 }
+
+//@Component("auditAwareImpl")
+//public class AuditorAwareImpl implements AuditorAware<Integer> {
+//    @Override
+//    public Optional<Integer> getCurrentAuditor() {
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        if(authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+//            return Optional.empty();
+//        }
+//
+//        AppUserDetails appUserDetails = (AppUserDetails)authentication.getPrincipal();
+//        System.out.println("Audit aware has been executed");
+//        return Optional.of(appUserDetails.getUserId());
+//    }
+//}

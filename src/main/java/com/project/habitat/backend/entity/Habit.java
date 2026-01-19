@@ -57,17 +57,27 @@ public class Habit {
     )
     private Set<HabitFrequency> frequencies = new HashSet<>();
 
-    @Column(name = "created_by", updatable = false, nullable = false)
+//    @Column(name = "created_by", updatable = false, nullable = false)
+//    @CreatedBy
+//    private String createdBy;
+
     @CreatedBy
-    private String createdBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false, updatable = false)
+    private AppUser createdBy;
 
     @Column(name = "created_date")
     @CreatedDate
     private LocalDate createdDate;
 
-    @Column(name = "modified_by")
+//    @Column(name = "modified_by")
+//    @LastModifiedBy
+//    private String modifiedBy;
+
     @LastModifiedBy
-    private String modifiedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "modified_by")
+    private AppUser modifiedBy;
 
     @Column(name = "modified_date")
     @LastModifiedDate
