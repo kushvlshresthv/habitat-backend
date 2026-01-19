@@ -63,6 +63,12 @@ recent_completions() {
   echo
 }
 
+my_todos() {
+  echo "Loading recent completions..."
+  curl -X GET "$BASE_URL/api/my-todos" -u $USER:$PASS | jq
+  echo
+}
+
 
 
 ## Another endpoint example

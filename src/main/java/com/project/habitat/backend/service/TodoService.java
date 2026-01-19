@@ -1,9 +1,6 @@
 package com.project.habitat.backend.service;
 
-import com.project.habitat.backend.dto.ActivityDto;
-import com.project.habitat.backend.dto.TodoCompletionActivityDto;
-import com.project.habitat.backend.dto.TodoDto;
-import com.project.habitat.backend.dto.TodoCreationDto;
+import com.project.habitat.backend.dto.*;
 import com.project.habitat.backend.entity.AppUser;
 import com.project.habitat.backend.entity.Todo;
 import com.project.habitat.backend.enums.TodoRating;
@@ -221,5 +218,24 @@ public class TodoService {
                 .toList();
 
         return sortedTodoCompletionActivities;
+    }
+
+
+    public MyTodosDto getMyTodos(Integer uid) {
+        List<TodoDto> notStartedTodos = todoRepository.getNotStartedTodos(uid);
+        List<TodoDto> completedTodos = todoRepository.getCompletedTodos(uid);
+
+        //A_TODO: filter out the expired todos and send it in a separated container as well
+        List<TodoDto> sortedNotStartedTodos = notStartedTodos.stream()
+                .sorted(Comparator.comparing(TodoDto::getDeadlineDate).reversed())
+                .toList();
+
+        List<TodoDto> sortedCompletedTodos = completedTodos.stream()
+                .sorted(Comparator.comparing(TodoDto::getDeadlineDate).reversed())
+                .toList();
+        MyTodosDto myTodos = new MyTodosDto();
+        myTodos.setNotStartedTodos(sortedNotStartedTodos);
+        myTodos.setCompletedTodos(sortedCompletedTodos);
+        return myTodos;
     }
 }

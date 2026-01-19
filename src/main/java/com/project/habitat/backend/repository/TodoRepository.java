@@ -1,6 +1,7 @@
 package com.project.habitat.backend.repository;
 
 import com.project.habitat.backend.dto.TodoCompletionActivityDto;
+import com.project.habitat.backend.dto.TodoDto;
 import com.project.habitat.backend.entity.Todo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +40,26 @@ public interface TodoRepository extends JpaRepository<Todo, Integer> {
           AND t.status IN ('NOT_STARTED', 'IN_PROGRESS', 'PAUSED')
     """)
     List<Todo> getIncompleteTodos(@Param("uid") Integer uid);
+
+
+
+    @Query("""
+                SELECT new com.project.habitat.backend.dto.TodoDto(t)
+                FROM Todo t
+                WHERE t.createdBy.uid = :uid
+                  AND t.status = 'NOT_STARTED'
+            """)
+    List<TodoDto> getNotStartedTodos(@Param("uid") Integer uid);
+
+
+    @Query("""
+        SELECT new com.project.habitat.backend.dto.TodoDto(t)
+        FROM Todo t
+        WHERE t.createdBy.uid = :uid
+          AND t.status = 'COMPLETED'
+    """)
+    List<TodoDto> getCompletedTodos(@Param("uid") Integer uid);
+
 
 
     @Query("""

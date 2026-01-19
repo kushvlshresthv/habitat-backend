@@ -1,11 +1,13 @@
 package com.project.habitat.backend.controller;
 
+import com.project.habitat.backend.dto.MyTodosDto;
 import com.project.habitat.backend.dto.TodoDto;
 import com.project.habitat.backend.dto.TodoCreationDto;
 import com.project.habitat.backend.response.ApiResponse;
 import com.project.habitat.backend.response.ResponseMessage;
 import com.project.habitat.backend.service.TodoService;
 import com.project.habitat.backend.service.security.AppUserDetails;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -57,5 +59,11 @@ public class TodoController {
     public ResponseEntity<ApiResponse> rateTodo(@RequestParam Integer id, @RequestParam Integer ratingValue, @AuthenticationPrincipal AppUserDetails appUserDetails) {
         todoService.rateTodo(id, ratingValue, appUserDetails.getUserId());
         return ResponseEntity.ok(new ApiResponse(ResponseMessage.TODO_RATED));
+    }
+
+    @GetMapping("my-todos")
+    public ResponseEntity<ApiResponse> myTodos(@AuthenticationPrincipal AppUserDetails appUserDetails) {
+        MyTodosDto myTodos = todoService.getMyTodos(appUserDetails.getUserId());
+        return ResponseEntity.ok(new ApiResponse(myTodos));
     }
 }
