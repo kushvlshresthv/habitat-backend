@@ -221,9 +221,12 @@ public class TodoService {
     }
 
 
-    public MyTodosDto getMyTodos(Integer uid) {
-        List<TodoDto> notStartedTodos = todoRepository.getNotStartedTodos(uid);
+    public MyTodosDto getMyTodos(Integer uid, String timezone) {
+        ZoneId zone = ZoneId.of(timezone);
+        LocalDate today = LocalDate.now(zone);
+        List<TodoDto> notStartedTodos = todoRepository.getNotStartedTodosNotExpired(uid, today);
         List<TodoDto> completedTodos = todoRepository.getCompletedTodos(uid);
+        List<TodoDto> incompleteExpiredTodos = todoRepository.getIncompleteAndExpiredTodos(uid, today);
 
         //A_TODO: filter out the expired todos and send it in a separated container as well
         List<TodoDto> sortedNotStartedTodos = notStartedTodos.stream()
@@ -233,9 +236,14 @@ public class TodoService {
         List<TodoDto> sortedCompletedTodos = completedTodos.stream()
                 .sorted(Comparator.comparing(TodoDto::getDeadlineDate).reversed())
                 .toList();
+
+        List<TodoDto> sortedExpiredTodos = incompleteExpiredTodos.stream()
+                .sorted(Comparator.comparing(TodoDto::getDeadlineDate).reversed())
+                .toList();
         MyTodosDto myTodos = new MyTodosDto();
         myTodos.setNotStartedTodos(sortedNotStartedTodos);
         myTodos.setCompletedTodos(sortedCompletedTodos);
+        myTodos.setExpiredTodos(sortedExpiredTodos);
         return myTodos;
     }
 }

@@ -19,13 +19,13 @@ import java.util.Optional;
 public interface TodoRepository extends JpaRepository<Todo, Integer> {
 
     @Query("""
-        SELECT t
-        FROM Todo t
-        WHERE t.createdBy.uid = :uid
-          AND t.status = 'COMPLETED'
-          AND t.completedAt >= :startDate
-          AND t.completedAt <= :endDate
-    """)
+                SELECT t
+                FROM Todo t
+                WHERE t.createdBy.uid = :uid
+                  AND t.status = 'COMPLETED'
+                  AND t.completedAt >= :startDate
+                  AND t.completedAt <= :endDate
+            """)
     List<Todo> getCompletedTodosBetween(
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate,
@@ -34,13 +34,12 @@ public interface TodoRepository extends JpaRepository<Todo, Integer> {
 
 
     @Query("""
-        SELECT t
-        FROM Todo t
-        WHERE t.createdBy.uid = :uid
-          AND t.status IN ('NOT_STARTED', 'IN_PROGRESS', 'PAUSED')
-    """)
+                SELECT t
+                FROM Todo t
+                WHERE t.createdBy.uid = :uid
+                  AND t.status IN ('NOT_STARTED', 'IN_PROGRESS', 'PAUSED')
+            """)
     List<Todo> getIncompleteTodos(@Param("uid") Integer uid);
-
 
 
     @Query("""
@@ -48,27 +47,37 @@ public interface TodoRepository extends JpaRepository<Todo, Integer> {
                 FROM Todo t
                 WHERE t.createdBy.uid = :uid
                   AND t.status = 'NOT_STARTED'
+                  AND t.deadlineDate >= :today
             """)
-    List<TodoDto> getNotStartedTodos(@Param("uid") Integer uid);
+    List<TodoDto> getNotStartedTodosNotExpired(@Param("uid") Integer uid, @Param("today") LocalDate today);
 
 
     @Query("""
-        SELECT new com.project.habitat.backend.dto.TodoDto(t)
-        FROM Todo t
-        WHERE t.createdBy.uid = :uid
-          AND t.status = 'COMPLETED'
-    """)
+                SELECT new com.project.habitat.backend.dto.TodoDto(t)
+                FROM Todo t
+                WHERE t.createdBy.uid = :uid
+                  AND t.status = 'COMPLETED'
+            """)
     List<TodoDto> getCompletedTodos(@Param("uid") Integer uid);
 
 
+    @Query("""
+                SELECT new com.project.habitat.backend.dto.TodoDto(t)
+                FROM Todo t
+                WHERE t.createdBy.uid = :uid
+                  AND t.status != 'COMPLETED'
+                  AND t.deadlineDate < :today
+            """)
+    List<TodoDto> getIncompleteAndExpiredTodos(@Param("uid") Integer uid, @Param("today") LocalDate today);
+
 
     @Query("""
-        SELECT t
-        FROM Todo t
-        WHERE t.createdBy.uid = :uid
-          AND t.status IN ('NOT_STARTED', 'IN_PROGRESS', 'PAUSED')
-          AND t.deadlineDate = :today
-    """)
+                SELECT t
+                FROM Todo t
+                WHERE t.createdBy.uid = :uid
+                  AND t.status IN ('NOT_STARTED', 'IN_PROGRESS', 'PAUSED')
+                  AND t.deadlineDate = :today
+            """)
     List<Todo> getIncompleteTodosForDate(
             @Param("uid") Integer uid,
             @Param("today") LocalDate today
@@ -76,12 +85,12 @@ public interface TodoRepository extends JpaRepository<Todo, Integer> {
 
 
     @Query("""
-        SELECT t
-        FROM Todo t
-        WHERE t.createdBy.uid = :uid
-          AND t.status IN ('NOT_STARTED', 'IN_PROGRESS', 'PAUSED')
-          AND t.deadlineDate < :today
-    """)
+                SELECT t
+                FROM Todo t
+                WHERE t.createdBy.uid = :uid
+                  AND t.status IN ('NOT_STARTED', 'IN_PROGRESS', 'PAUSED')
+                  AND t.deadlineDate < :today
+            """)
     List<Todo> getExpiredTodos(
             @Param("uid") Integer uid,
             @Param("today") LocalDate today
@@ -89,20 +98,20 @@ public interface TodoRepository extends JpaRepository<Todo, Integer> {
 
 
     @Query("""
-        SELECT t
-        FROM Todo t
-        WHERE t.createdBy.uid = :uid
-          AND t.status = 'IN_PROGRESS'
-    """)
+                SELECT t
+                FROM Todo t
+                WHERE t.createdBy.uid = :uid
+                  AND t.status = 'IN_PROGRESS'
+            """)
     List<Todo> getOngoingTodo(@Param("uid") Integer uid);
 
 
     @Query("""
-        SELECT t
-        FROM Todo t
-        WHERE t.id = :todoId
-          AND t.createdBy.uid = :uid
-    """)
+                SELECT t
+                FROM Todo t
+                WHERE t.id = :todoId
+                  AND t.createdBy.uid = :uid
+            """)
     Optional<Todo> getUserTodoById(
             @Param("todoId") Integer todoId,
             @Param("uid") Integer uid
@@ -110,12 +119,12 @@ public interface TodoRepository extends JpaRepository<Todo, Integer> {
 
 
     @Query("""
-        SELECT COUNT(t)
-        FROM Todo t
-        WHERE t.status = 'COMPLETED'
-          AND t.completedAt >= :startOfDay
-          AND t.completedAt < :endOfDay
-    """)
+                SELECT COUNT(t)
+                FROM Todo t
+                WHERE t.status = 'COMPLETED'
+                  AND t.completedAt >= :startOfDay
+                  AND t.completedAt < :endOfDay
+            """)
     Long countCompletedTodosBetween(
             @Param("startOfDay") LocalDateTime startOfDay,
             @Param("endOfDay") LocalDateTime endOfDay
@@ -123,12 +132,12 @@ public interface TodoRepository extends JpaRepository<Todo, Integer> {
 
 
     @Query("""
-        SELECT t.estimatedCompletionTimeMinutes, t.todoRating
-        FROM Todo t
-        WHERE t.status = 'COMPLETED'
-          AND t.completedAt >= :startOfDay
-          AND t.completedAt < :endOfDay
-    """)
+                SELECT t.estimatedCompletionTimeMinutes, t.todoRating
+                FROM Todo t
+                WHERE t.status = 'COMPLETED'
+                  AND t.completedAt >= :startOfDay
+                  AND t.completedAt < :endOfDay
+            """)
     List<Object[]> getEstimatedTimesAndRatingsBetween(
             @Param("startOfDay") LocalDateTime startOfDay,
             @Param("endOfDay") LocalDateTime endOfDay
@@ -136,25 +145,25 @@ public interface TodoRepository extends JpaRepository<Todo, Integer> {
 
 
     @Query("""
-        SELECT COUNT(t)
-        FROM Todo t
-        WHERE t.status = 'IN_PROGRESS'
-    """)
+                SELECT COUNT(t)
+                FROM Todo t
+                WHERE t.status = 'IN_PROGRESS'
+            """)
     Long countOngoingTodos();
 
 
     @Query("""
-        SELECT new com.project.habitat.backend.dto.TodoCompletionActivityDto(
-            u.username,
-            t.estimatedCompletionTimeMinutes,
-            t.todoRating,
-            t.completedAt
-        )
-        FROM Todo t
-        JOIN t.createdBy u
-        WHERE t.status = 'COMPLETED'
-          AND t.completedAt IS NOT NULL
-        ORDER BY t.completedAt DESC
-    """)
+                SELECT new com.project.habitat.backend.dto.TodoCompletionActivityDto(
+                    u.username,
+                    t.estimatedCompletionTimeMinutes,
+                    t.todoRating,
+                    t.completedAt
+                )
+                FROM Todo t
+                JOIN t.createdBy u
+                WHERE t.status = 'COMPLETED'
+                  AND t.completedAt IS NOT NULL
+                ORDER BY t.completedAt DESC
+            """)
     Page<TodoCompletionActivityDto> findRecentCompletedTodos(Pageable pageable);
 }

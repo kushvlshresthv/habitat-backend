@@ -10,4 +10,5 @@ import java.util.List;
 public class MyTodosDto {
     List<TodoDto> notStartedTodos;
     List<TodoDto> completedTodos;
+    List<TodoDto> expiredTodos;
 }

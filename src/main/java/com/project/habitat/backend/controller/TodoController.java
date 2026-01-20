@@ -63,7 +63,7 @@ public class TodoController {
 
     @GetMapping("my-todos")
     public ResponseEntity<ApiResponse> myTodos(@AuthenticationPrincipal AppUserDetails appUserDetails) {
-        MyTodosDto myTodos = todoService.getMyTodos(appUserDetails.getUserId());
+        MyTodosDto myTodos = todoService.getMyTodos(appUserDetails.getUserId(), appUserDetails.getTimeZone());
         return ResponseEntity.ok(new ApiResponse(myTodos));
     }
 }
